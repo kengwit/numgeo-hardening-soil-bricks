@@ -1,8 +1,8 @@
+# numgeo-hardening-soil-bricks { .hsb-center }
+
 <p align="center">
   <img src="./assets/numgeo-hs-logo.png" class="hsb-logo"/>
 </p>
-
-# numgeo-hardening-soil-bricks { .hsb-center }
 
 <div class="hsb-hero" markdown>
 
