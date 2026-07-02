@@ -1,0 +1,10 @@
+output_CD.out
+*TriaxialE1
+5000 100 1
+-0.25
+*END
+
+
+
+
+

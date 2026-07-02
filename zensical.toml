@@ -1,0 +1,153 @@
+# ============================================================================
+# numgeo-hardening-soil-bricks — Zensical configuration
+# ============================================================================
+
+[project]
+
+site_name = "numgeo-hardening-soil-bricks"
+site_description = "Hardening Soil (Matsuoka-Nakai, Bricks) — a standalone Fortran implementation for Abaqus/UMAT and the incrementalDriver, developed for numgeo."
+site_author = "Jan Machaček"
+
+# Canonical URL of the published site. Adjust if you publish elsewhere.
+site_url = "https://j-machacek.github.io/numgeo-hardening-soil-bricks/"
+
+# Footer copyright.
+copyright = """
+Copyright &copy; 2026 Jan Machaček, Leonardo José Cocco, Marcin Cudny
+"""
+
+# --- Navigation -------------------------------------------------------------
+nav = [
+  { "Home" = "index.md" },
+  { "Theory" = "theory.md" },
+  { "Model parameters" = "parameters.md" },
+
+  { "Components" = [
+      "components/index.md",
+      { "Incremental driver" = "components/incremental-driver.md" },
+      { "Calibration tool" = "components/calibration.md" },
+      { "UMAT (Abaqus) interface" = "components/umat.md" },
+  ]},
+
+  { "Building the code" = "building.md" },
+  { "Examples" = "examples.md" },
+  { "About & contact" = "about.md" },
+  { "References" = "references.md" },
+]
+
+# --- Custom CSS / JS --------------------------------------------------------
+
+# Paths are relative to "docs_dir".
+extra_css = [
+  "stylesheets/extra.css",
+]
+
+# MathJax for rendering LaTeX math (same setup as the numgeo / numgeo-ACT docs).
+extra_javascript = [
+  "javascripts/mathjax.js",
+  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
+]
+
+# Use stand-alone .html files (portable, works when opened from disk).
+use_directory_urls = false
+
+# ----------------------------------------------------------------------------
+# Theme options
+# ----------------------------------------------------------------------------
+[project.theme]
+
+# "classic" reproduces the traditional Material for MkDocs look, which the
+# numgeo stylesheet (extra.css, using --md-* variables) was written for.
+variant = "classic"
+
+language = "en"
+
+# Brand logo & favicon (relative to docs_dir).
+logo = "assets/numgeo-logo.png"
+favicon = "assets/favicon.ico"
+
+# Feature toggles — mirror the numgeo / numgeo-ACT documentation.
+features = [
+    "navigation.tabs",
+    "navigation.tabs.sticky",
+    "navigation.top",
+    "navigation.indexes",
+    "navigation.footer",
+    "content.code.copy",
+    "content.code.annotate",
+    "search.highlight",
+    "search.suggest",
+    "toc.follow",
+]
+
+# Text font — numgeo uses Open Sans.
+[project.theme.font]
+text = "Open Sans"
+
+# Colour schemes: light (default) + dark (slate) with an eye-style toggle,
+# matching the numgeo documentation. The brand brown is supplied by extra.css.
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "material/eye"
+toggle.name = "Switch to dark mode"
+primary = "custom"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "material/eye-outline"
+toggle.name = "Switch to light mode"
+primary = "custom"
+
+# ----------------------------------------------------------------------------
+# Markdown extensions
+# (Full default set kept so admonitions, tabs, details, math, mermaid, etc.
+#  all work; arithmatex "generic" enables MathJax-rendered LaTeX.)
+# ----------------------------------------------------------------------------
+[project.markdown_extensions.abbr]
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.def_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+[project.markdown_extensions.toc]
+permalink = true
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+[project.markdown_extensions.pymdownx.betterem]
+[project.markdown_extensions.pymdownx.caret]
+[project.markdown_extensions.pymdownx.details]
+[project.markdown_extensions.pymdownx.emoji]
+emoji_generator = "zensical.extensions.emoji.to_svg"
+emoji_index = "zensical.extensions.emoji.twemoji"
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+[project.markdown_extensions.pymdownx.inlinehilite]
+[project.markdown_extensions.pymdownx.keys]
+[project.markdown_extensions.pymdownx.magiclink]
+[project.markdown_extensions.pymdownx.mark]
+[project.markdown_extensions.pymdownx.smartsymbols]
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
+]
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+combine_header_slug = true
+[project.markdown_extensions.pymdownx.tasklist]
+custom_checkbox = true
+[project.markdown_extensions.pymdownx.tilde]
+
+[project.extra]
+# Remove the "Made with Zensical" line from the footer.
+generator = false
+
+[project.extra.consent]
+title = "Cookie consent"
+description = """
+    We use cookies to recognize your repeated visits and preferences, as well
+    as to measure the effectiveness of our documentation and whether users
+    find what they're searching for. With your consent, you're helping us to
+    make our documentation better.
+"""

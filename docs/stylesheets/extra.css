@@ -1,0 +1,154 @@
+/* ===========================================================================
+   numgeo-hardening-soil-bricks documentation — colour scheme & styling
+   Adapted from the numgeo documentation stylesheet (same as numgeo-ACT) so
+   that this documentation shares the numgeo visual identity.
+   Brand colour: rgb(160, 90, 44) (numgeo brown).
+   =========================================================================== */
+
+:root {
+    --md-primary-fg-color:        rgb(160, 90, 44);
+    --md-primary-fg-color--light: rgb(160, 90, 44);
+    --md-primary-fg-color--dark:  rgb(160, 90, 44);
+    --md-primary-bg-color:        hsla(0, 0%, 100%, 1);
+    --md-primary-bg-color--light: hsla(0, 0%, 100%, 0.7);
+
+    --md-accent-fg-color:               rgb(160, 90, 44);
+    --md-accent-fg-color--transparent:  rgba(160, 90, 44, 0.25);
+    --md-accent-bg-color:               hsla(0, 0%, 100%, 1);
+    --md-accent-bg-color--light:        hsla(0, 0%, 100%, 0.7);
+}
+
+/* Slightly smaller admonitions, exactly as on the numgeo site */
+.md-typeset .admonition {
+    font-size: 0.9em;
+}
+
+/* Larger page titles, exactly as on the numgeo site */
+.md-typeset h1 {
+    font-size: 2.25em;
+}
+
+/* In dark mode, keep the header brown rather than pure black so the brand
+   identity is preserved when the user toggles the colour scheme.            */
+[data-md-color-scheme="slate"] {
+    --md-primary-fg-color:        rgb(160, 90, 44);
+    --md-primary-fg-color--light: rgb(160, 90, 44);
+    --md-primary-fg-color--dark:  rgb(120, 66, 32);
+}
+
+/* ===========================================================================
+   Landing-page (home) components
+   These re-use the brand colour variables above so they blend with the theme
+   in both light and dark mode.
+   =========================================================================== */
+
+/* Hero block ------------------------------------------------------------- */
+.hsb-hero {
+    text-align: center;
+    margin: 1.0rem 0 2.0rem 0;
+}
+.hsb-hero img.hsb-logo {
+    max-width: 460px;
+    width: 70%;
+    height: auto;
+    margin: 0 auto 0.6rem auto;
+}
+.hsb-hero .hsb-tagline {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    max-width: 46rem;
+    margin: 0.4rem auto 1.2rem auto;
+    color: var(--md-default-fg-color--light);
+}
+
+/* Call-to-action buttons (use the Material .md-button base) -------------- */
+.hsb-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+    margin: 1.0rem 0 0 0;
+}
+
+/* Feature grid (cards) --------------------------------------------------- */
+.hsb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.0rem;
+    margin: 1.5rem 0;
+}
+.hsb-card {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 6px;
+    padding: 1.0rem 1.1rem;
+    background: var(--md-default-bg-color);
+    transition: border-color 120ms, box-shadow 120ms, transform 120ms;
+}
+.hsb-card:hover {
+    border-color: var(--md-accent-fg-color);
+    box-shadow: 0 2px 10px rgba(160, 90, 44, 0.12);
+    transform: translateY(-2px);
+}
+.hsb-card h3 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.0rem;
+    color: var(--md-primary-fg-color);
+}
+.hsb-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--md-default-fg-color--light);
+}
+
+/* A thin brand-coloured rule used to separate home-page sections --------- */
+.hsb-rule {
+    border: none;
+    height: 3px;
+    width: 64px;
+    margin: 2.2rem auto 1.4rem auto;
+    border-radius: 3px;
+    background: var(--md-primary-fg-color);
+}
+
+/* Centre helper ---------------------------------------------------------- */
+.hsb-center { text-align: center; }
+
+/* ---- Figures (element-test results etc.) ------------------------------- */
+figure.hsb-fig-wrap {
+  margin: 1.2rem 0;
+  text-align: center;
+}
+.hsb-fig {
+  width: 100%;
+  max-width: 820px;
+  height: auto;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 0.4rem 0.6rem;
+}
+figure.hsb-fig-wrap > figcaption {
+  font-size: 0.82em;
+  color: var(--md-default-fg-color--light);
+  margin-top: 0.5rem;
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+/* keep figures readable in dark mode: white plate already set above */
+
+/* ---- Compact "shipped with" badge used on component pages --------------- */
+.hsb-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--md-primary-fg-color);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  margin: 0 0.3rem 0.3rem 0;
+}
