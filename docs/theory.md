@@ -25,7 +25,7 @@ truth, so that this repository's documentation and the numgeo documentation neve
 ## What's specific to this repository
 
 The theory manual describes the *model*, independent of how it is called. What this repository
-adds is purely **plumbing**: three different ways of calling the same, unmodified constitutive
+adds is purely plumbing: three different ways of calling the same, unmodified constitutive
 routine.
 
 <div class="hsb-grid" markdown>

@@ -18,17 +18,6 @@ Each folder contains an Intel Fortran project (`.vfproj`) and solution (`.sln`) 
 installed — `ifort` for the Win32 configurations, `ifx` for x64), select **Debug** or **Release**
 and **x64** (recommended) or **Win32**, and build.
 
-!!! success "Path fix applied"
-    The `.vfproj` files reference their sources with relative paths of the form
-    `..\..\src\<component>\*.f90`. In earlier packaging of this project the `src\` folder had not
-    yet been introduced when the projects were generated, so the shipped `.vfproj` files pointed
-    one directory too shallow (e.g. `..\..\numgeo-hs-bricks\src\...` instead of
-    `..\..\src\numgeo-hs-bricks\...`) and would fail to locate their source files when opened
-    as-is. This has been corrected in the version of the project referenced by this documentation.
-    If you are working from an older copy and a project fails to find its source files
-    immediately after opening it, check the `RelativePath` entries in the corresponding `.vfproj`
-    file against the actual location of `src/<component>/`.
-
 Each project's `Source Files` filter lists exactly the files given in that component's page under
 [Components](components/index.md) — nothing is hidden or auto-generated beyond the usual `.mod`/`.obj`
 intermediates.

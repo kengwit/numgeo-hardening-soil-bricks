@@ -1,4 +1,4 @@
-![numgeoACT](./docs/assets/numgeo-logo.png)
+![numgeoACT](./docs/assets/numgeo-hs-logo.png)
 
 # numgeo-hardening-soil-bricks
 

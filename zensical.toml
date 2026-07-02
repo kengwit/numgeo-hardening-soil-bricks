@@ -63,7 +63,7 @@ variant = "classic"
 language = "en"
 
 # Brand logo & favicon (relative to docs_dir).
-logo = "assets/numgeo-logo.png"
+logo = "assets/numgeo-logo-white.png"
 favicon = "assets/favicon.ico"
 
 # Feature toggles — mirror the numgeo / numgeo-ACT documentation.

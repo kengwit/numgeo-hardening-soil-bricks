@@ -1,10 +1,10 @@
+<p align="center">
+  <img src="./assets/numgeo-hs-logo.png" class="hsb-logo"/>
+</p>
+
 # numgeo-hardening-soil-bricks { .hsb-center }
 
 <div class="hsb-hero" markdown>
-
-<p align="center">
-  <img src="./assets/numgeo-logo.png" class="hsb-logo"/>
-</p>
 
 <p class="hsb-tagline" markdown>
 A standalone Fortran implementation of the **Hardening Soil (Matsuoka-Nakai, Bricks)**
