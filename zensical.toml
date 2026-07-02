@@ -16,6 +16,9 @@ copyright = """
 Copyright &copy; 2026 Jan Machaček, Leonardo José Cocco, Marcin Cudny
 """
 
+docs_dir = "docs"
+site_dir = "site"
+
 # --- Navigation -------------------------------------------------------------
 nav = [
   { "Home" = "index.md" },
