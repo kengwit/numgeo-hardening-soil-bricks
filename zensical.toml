@@ -5,7 +5,7 @@
 [project]
 
 site_name = "numgeo-hardening-soil-bricks"
-site_description = "Hardening Soil (Matsuoka-Nakai, Bricks) — a standalone Fortran implementation for Abaqus/UMAT and the incrementalDriver, developed for numgeo."
+site_description = "Hardening Soil (Matsuoka-Nakai, Bricks) — a Fortran implementation for Abaqus/UMAT and the incrementalDriver, developed for numgeo."
 site_author = "Jan Machaček"
 
 # Canonical URL of the published site. Adjust if you publish elsewhere.
@@ -15,9 +15,6 @@ site_url = "https://j-machacek.github.io/numgeo-hardening-soil-bricks/"
 copyright = """
 Copyright &copy; 2026 Jan Machaček, Leonardo José Cocco, Marcin Cudny
 """
-
-docs_dir = "docs"
-site_dir = "site"
 
 # --- Navigation -------------------------------------------------------------
 nav = [
