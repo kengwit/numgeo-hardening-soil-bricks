@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "D:\\Git\\numgeo-hardening-soil-bricks\\VisualStudio\\numgeo-hs-bricks-calibration\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{716AC055-D4C5-8CA4-0F58-A05A68C4F5CC}|numgeo-hs-bricks-calibration.vfproj|d:\\git\\numgeo-hardening-soil-bricks\\numgeo-hs-bricks-calibration\\calibrate_hs_bricks.f90||{8B382828-6202-11D1-8870-0000F87579D2}|"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Git\\numgeo-hardening-soil-bricks\\numgeo-hs-bricks-calibration\\calibrate_hs_bricks.f90||{8B382828-6202-11D1-8870-0000F87579D2}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,10 +23,8 @@
               "RelativeDocumentMoniker": "..\\..\\numgeo-hs-bricks-calibration\\calibrate_hs_bricks.f90",
               "ToolTip": "D:\\Git\\numgeo-hardening-soil-bricks\\numgeo-hs-bricks-calibration\\calibrate_hs_bricks.f90",
               "RelativeToolTip": "..\\..\\numgeo-hs-bricks-calibration\\calibrate_hs_bricks.f90",
-              "ViewState": "AgIAAGAAAAAAAAAAAAAwwIMAAAAAAAAAAAAAAA==",
               "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
-              "WhenOpened": "2026-07-02T19:21:21.293Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-02T19:21:21.293Z"
             }
           ]
         }

@@ -180,6 +180,8 @@ module material_hardening_soil_MN_bricks_
   !                           - hardening enhancement H_i = Gm**(1+Eur_ref/(2 E50_ref)) applied to the cone
   !                           - (return mappings) and cap (pre-scaled hc, reusing fac); elastic tangent from E_t;
   !                           - commit brick state on vertex early return; extended NaN diagnostics
+  !>* 03.07.2026, J. Machacek - Only auto-initialise pp0 (and gammapss0) on the first increment of an analysis
+  !                           - if pp0 arrives as statev(3) <= 0 (i.e. genuinely not set by the caller).
   !
 
   subroutine hardening_soil_MN_bricks(stress,statev,dds_dde,dstrain,time,dtime,ntens,nstatev,props,nprops,istep,iinc)
@@ -497,12 +499,12 @@ module material_hardening_soil_MN_bricks_
        ! mobilised dilatancy angle
        sin_psi_mob_trial = get_mob_dilatancy_angle(sin_phi_mob_trial, mat%sin_phi_cs, mat%apex, Mcs, p_trial, q_trial)
        
-       ! Initialise state variables
-       if (istep == 1 .and. iinc == 1) then
+       ! Initialise state variables. Only if pp0 (statev(3)) arrives as <= 0, i.e. genuinely unset by the caller
+       if (istep == 1 .and. iinc == 1 ) then
          gammapss0 = -(-3.0_rk/2.0_rk*q_trial/Ei+3.0_rk/2.0_rk*q_trial/Eur*((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial-mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) & 
                      / (1.0_rk-sin_phi_mob_trial) * sin_phi_mob_trial)/((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial-mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) & 
                      * (1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial
-          pp0 = dsqrt( q_trial**2/(chi*mat%alpha)**2 + (p_trial+mat%apex)**2 ) - mat%apex
+         if (pp0 <= 0.0_rk) pp0 = dsqrt( q_trial**2/(chi*mat%alpha)**2 + (p_trial+mat%apex)**2 ) - mat%apex
        end if
        
        ! Assessment of yield functions
@@ -2726,4 +2728,4 @@ module material_hardening_soil_MN_bricks_
   end subroutine objective_function
   
   
-end module material_hardening_soil_MN_bricks_
+end module material_hardening_soil_MN_bricks_
