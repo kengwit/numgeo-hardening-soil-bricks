@@ -20,7 +20,7 @@
 *Nset, Nset=ntop
 3 , 4
 **
-*Element, Type=CAX4
+*Element, Type=CAX4R
 1 , 1 , 2 , 3 , 4
 **
 ** ----------------------------------------
@@ -31,6 +31,8 @@
 ** ----------------------------------------
 **
 *Solid Section, Elset = eall, material=Hardening-Soil-MN-Bricks
+*Hourglass stiffness
+100
 **
 ** ----------------------------------------
 **
@@ -40,7 +42,7 @@
 *User Material, constants=16, unsymm
 30d3, 30d3, 90d3, 0.55, 0, 42, 16, 0.25
 ** pref, K0nc, Rf, Eiref, alpha, Hpp, gamma_07, G0
-100, 0.4, 0.9, 65.5d3, 1.47, 41194, 2e-4, 108e3
+100, 0.4, 0.9, 65.5d3, 1.46, 72028, 2e-4, 108e3
 *Density
 1.8
 **
@@ -49,23 +51,28 @@
 *Initial conditions, Type = stress, geostatic
 eall, -100, 0.0, -100, 1., 1, 1
 **
+*Initial conditions, Type=solution, user
+**
 ** ----------------------------------------
 **
 *Amplitude, name = LoadingRamp
 0.0, 0.0, 1.0, 1.0
+*Amplitude, name = const
+0.0, 1.0, 1.0, 1.0
 **
 ** ----------------------------------------
 **
 *Step, name=Geostatic, inc=1, unsymm=yes
-*Geostatic
+*Static
+1, 1, 1, 1
 **
-*DLoad
-eall, grav, 0.0, 0., -1, 0.
+***DLoad, amplitude=const
+**eall, grav, 10.0, 0., -1
 **
-*Dload
-eall, p3, -100
-*Dload
-eall, p2, -100
+*DLoad, amplitude=const
+eall, p3, 100
+*DLoad, amplitude=const
+eall, p2, 100
 **
 *Boundary
 nleft, 1, 1, 0
@@ -82,20 +89,8 @@ S, E
 *Static
 0.0025, 1., 0.0025, 0.0025
 **
-*Dload
-eall, grav, 0.0, 0., -1, 0.
-**
-*Dload
-eall, p3, -100
-*Dload
-eall, p2, -100
-**
 *Boundary, amplitude = LoadingRamp
 ntop, 2, 2, -0.1
-**
-*Boundary
-nleft, 1, 1, 0
-nbottom, 2, 2, 0.
 **
 *El print, Elset = eall
 S, E

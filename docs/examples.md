@@ -84,15 +84,18 @@ tool.
 
 ## UMAT example
 
-`examples/umat/triax-hs-bricks.inp` is a complete Abaqus input deck for the UMAT interface: a
-single `CAX4` (axisymmetric) element, a `*Geostatic` step establishing the initial stress state,
-followed by a drained triaxial compression `*Static` step. See
-[UMAT (Abaqus) interface](components/umat.md) for the `/free` compiler setting and the folder
-layout (`user.for` + `umat.f90` + the `numgeo-hs-bricks` subfolder) this deck's `*User Material`
-needs at the location the job is run from.
+`examples/umat/triax-hs-bricks.inp` is a complete, working Abaqus input deck for the UMAT
+interface: a single axisymmetric `CAX4R` element (reduced integration, with hourglass control),
+a step named "Geostatic" (using `*Static`) that establishes the initial stress state via
+`*Initial conditions` and `sdvini.f90` (see [UMAT (Abaqus) interface](components/umat.md#sdvinif90-initialising-state-variables)),
+followed by a drained triaxial compression step driving the top boundary to $-10\,\%$ axial
+strain. See [UMAT (Abaqus) interface](components/umat.md) for the `/free` compiler setting and
+the folder layout (`user.for` + `umat.f90` + `sdvini.f90` + the `numgeo-hs-bricks` subfolder)
+this deck's `*User Material` needs at the location the job is run from.
 
-This example exercises the geostatic-to-loading transition specifically — the sequence in which
-the initial preconsolidation state must be established correctly on the very first call and then
-carried forward into the loading step without being silently reset (see the
-[Model parameters](parameters.md#the-internal-constants-alpha-and-hpp) page and the module's own
-revision history for background on this initialisation logic).
+Alongside the input deck, this folder also contains the actual results of running it —
+`abaqus-result.dat` — together with a native numgeo run of the same test, `numgeo-result.dat`,
+and the `triax_CD.py` script that produces the comparison figure discussed on
+[UMAT (Abaqus) vs. numgeo](validation/umat-vs-numgeo.md). Re-run `triax_CD.py` from within
+`examples/umat/` (after regenerating `abaqus-result.dat` yourself, if you want to reproduce it
+end-to-end) to rebuild `triax_CD_abq.png`/`.pdf`.

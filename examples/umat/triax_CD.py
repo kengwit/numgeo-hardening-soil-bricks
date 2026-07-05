@@ -21,17 +21,30 @@ def cm2inch(*tupl):
     else:
         return tuple(i/inch for i in tupl)
 
-def load_data(filepath):
+def load_data_abq(filepath):
     """Liest eine .out-Datei ein und gibt berechnete Größen zurück."""
-    data = pd.read_csv(filepath, skipinitialspace=False, delim_whitespace=True)
-    eps11 = -data['stran(1)'] * 100.
-    eps22 = -data['stran(2)'] * 100.
-    eps33 = -data['stran(3)'] * 100.
-    s11 = -data['stress(1)']
-    s22 = -data['stress(2)']
-    s33 = -data['stress(3)']
+    data = np.genfromtxt(filepath, skip_header=4)
+    eps11 = -data[:,1] * 100.
+    eps22 = -data[:,3] * 100.
+    eps33 = -data[:,4] * 100.
+    s11 = -data[:,5]
+    s22 = -data[:,7]
+    s33 = -data[:,8]
     epsv = eps11 + eps22 + eps33
-    q = s11 - s22
+    q = s22 - s11
+    return eps11, eps22, epsv, q
+
+def load_data_numgeo(filepath):
+    """Liest eine .out-Datei ein und gibt berechnete Größen zurück."""
+    data = np.genfromtxt(filepath, skip_header=4)
+    eps11 = -data[:,7] * 100.
+    eps22 = -data[:,8] * 100.
+    eps33 = -data[:,9] * 100.
+    s11 = -data[:,1]
+    s22 = -data[:,2]
+    s33 = -data[:,3]
+    epsv = eps11 + eps22 + eps33
+    q = s22 - s11
     return eps11, eps22, epsv, q
 
 
@@ -44,39 +57,40 @@ width  = 8.5  # cm
 fig, (sp1, sp2) = plt.subplots(
     nrows=1, ncols=2,
     figsize=cm2inch(2 * width, height),
-    dpi=200, facecolor='white'
+    dpi=600, facecolor='white'
 )
 
 #files = ['./output_CD.out','./reference-numgeo.dat']
-files = ['./output_CD.out']
-labels = ['numgeo-IncDriver','numgeo']
-linestyles = ['-', '--']
+files = ['./abaqus-result.dat', './numgeo-result.dat']
+labels = ['Abaqus with numgeo HS-Bricks', 'numgeo HS-Bricks']
+linestyles = ['-','--']
 
 for filepath, label, linestyle in zip(files,labels,linestyles):
     try:
-        eps11, eps22, epsv, q = load_data(filepath)
+        if filepath == './abaqus-result.dat':
+            eps11, eps22, epsv, q = load_data_abq(filepath)
+            sp1.plot(eps22, q, ls=linestyle, lw=0.75, zorder=1, label=label)
+            sp2.plot(eps22, epsv, ls=linestyle, lw=0.75, zorder=1)
+        else:
+            eps11, eps22, epsv, q = load_data_numgeo(filepath)
+            sp1.plot(eps22, q, ls=linestyle, lw=0.75, zorder=1, label=label, marker='x', markevery=0.1)
+            sp2.plot(eps22, epsv, ls=linestyle, lw=0.75, zorder=1, marker='x', markevery=0.1)
     except FileNotFoundError:
         print(f"Datei nicht gefunden, wird übersprungen: {filepath}")
         continue
     except Exception as e:
         print(f"Fehler beim Laden von {filepath}: {e}")
         continue
-
-    if label == 'numgeo-IncDriver':
-        sp1.plot(eps11, q, ls=linestyle, lw=0.75, zorder=1, label=label)
-        sp2.plot(eps11, epsv, ls=linestyle, lw=0.75, zorder=1)
-    else:
-        sp1.plot(eps22, -q, ls=linestyle, lw=0.75, zorder=1, label=label)
-        sp2.plot(eps22, epsv, ls=linestyle, lw=0.75, zorder=1)
+    
 # Achsenbeschriftungen
 sp1.set_xlabel('$\\varepsilon_{1}$ in %')
 sp1.set_ylabel('$q$ in kPa')
-sp1.legend(loc='best')
+sp1.legend(loc='best', fontsize=FONTSIZE-1)
 
 sp2.set_xlabel('$\\varepsilon_{1}$ in %')
 sp2.set_ylabel('$\\varepsilon_v$ in %')
 
 plt.tight_layout(w_pad=1.2)
 plt.show()
-fig.savefig('triax_CD.pdf', bbox_inches='tight')
-fig.savefig('triax_CD.png', bbox_inches='tight')
+fig.savefig('triax_CD_abq.pdf', bbox_inches='tight')
+fig.savefig('triax_CD_abq.png', bbox_inches='tight')

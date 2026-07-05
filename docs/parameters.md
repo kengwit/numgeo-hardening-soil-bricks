@@ -17,10 +17,10 @@ Hardening-Soil-MN-Bricks
 
 !!! note "Exact matching, not a substring search"
     `Hardening-Soil-MN` (the base model's identifier) is itself a prefix of
-    `Hardening-Soil-MN-Bricks`. The dispatch code in `material_models.f90` and
-    `umat_hardening_soil_MN_bricks_.f90` therefore compares the **first whitespace-delimited
-    token** of the material name exactly, rather than searching for it as a substring — a
-    substring search would risk one model silently swallowing requests meant for the other.
+    `Hardening-Soil-MN-Bricks`. The dispatch code in `material_models.f90` and `umat.f90`
+    therefore compares the **first whitespace-delimited token** of the material name exactly,
+    rather than searching for it as a substring — a substring search would risk one model
+    silently swallowing requests meant for the other.
 
 ## Material parameters (`props`)
 

@@ -1,8 +1,8 @@
 # Validation
 
-Two independent element-test comparisons validate this implementation against published
-reference results — one for the base Hardening Soil (Matsuoka&ndash;Nakai) mechanism with the
-BRICK extension deactivated, and one for the BRICK small-strain extension itself.
+Three element-test comparisons validate this implementation: two against published external
+references (for the base mechanism and for the BRICK extension), and one cross-checking the
+Abaqus UMAT interface against the parent code, numgeo, it was extracted from.
 
 <div class="hsb-grid" markdown>
 
@@ -16,24 +16,23 @@ stresses, back-calculated from Benz's dissertation, with the BRICK extension dea
 
 <div class="hsb-card" markdown>
 ### :material-cube-scan: BRICK extension vs. ZSoil
-Drained triaxial compression with small unloading&ndash;reloading loops, compared against the
-published ZSoil HS-MC-Bricks reference result for the same glacial till parameters and loading
-programme. <br>
+Drained triaxial compression with a small unloading&ndash;reloading loop, compared against the
+published ZSoil HS-MC-Bricks reference result — and, in the same figure, direct evidence that the
+BRICK extension does not overshoot. <br>
 [:octicons-arrow-right-16: Details](hs-mn-bricks-zsoil.md)
 </div>
 
 <div class="hsb-card" markdown>
-### :material-sync-alert: Overshooting check
-The same BRICK mechanism, isolated from any failure-criterion difference: an interrupted loading
-path reproduces its own purely monotonic reference to within $0.16\,\%$, reproducing Cudny &amp;
-Truty's own overshooting test. <br>
-[:octicons-arrow-right-16: Details](hs-mn-bricks-overshoot.md)
+### :material-compare: UMAT (Abaqus) vs. numgeo
+The same test run through Abaqus/UMAT and through native numgeo: confirms the UMAT interface
+reproduces the parent code's results rather than behaving as an independent reimplementation. <br>
+[:octicons-arrow-right-16: Details](umat-vs-numgeo.md)
 </div>
 
 </div>
 
-!!! info "Same parameter set for both base-model checks"
-    Both the drained/undrained comparison against Benz and the earlier
-    [overshooting check](../theory.md) against Cudny &amp; Truty use the same dense Hostun sand /
-    glacial till parameter sets already validated in the literature this implementation builds
-    on — see [Model parameters](../parameters.md) and [References](../references.md).
+!!! info "Same parameter set for both external-reference checks"
+    Both the drained/undrained comparison against Benz and the BRICK comparison against Cudny
+    &amp; Truty / ZSoil use the same dense Hostun sand / glacial till parameter sets already
+    validated in the literature this implementation builds on — see
+    [Model parameters](../parameters.md) and [References](../references.md).

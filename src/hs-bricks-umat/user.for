@@ -16,4 +16,5 @@
 include './numgeo-hs-bricks/precision_.f90'
 include './numgeo-hs-bricks/compatibility_numgeo_.f90'
 include './numgeo-hs-bricks/numgeo_hardening_soil_MN_bricks_.f90'
+include './sdvini.f90'
 include './umat.f90'

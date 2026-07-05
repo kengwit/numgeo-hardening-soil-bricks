@@ -36,7 +36,7 @@ nav = [
       "validation/index.md",
       { "Base model vs. Benz (2007)" = "validation/hs-mn-benz.md" },
       { "BRICK extension vs. ZSoil" = "validation/hs-mn-bricks-zsoil.md" },
-      { "Overshooting check" = "validation/hs-mn-bricks-overshoot.md" },
+      { "UMAT (Abaqus) vs. numgeo" = "validation/umat-vs-numgeo.md" },
   ]},
 
   { "About & contact" = "about.md" },

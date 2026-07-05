@@ -68,7 +68,8 @@ infrastructure. <br>
 All three tools link the same two files: the constitutive module itself and a small
 compatibility layer that supplies the stress-invariant and matrix helper routines it needs.
 Nothing in the constitutive model differs between the three — only the surrounding driver code
-that calls it does.
+that calls it does, which is why the [UMAT (Abaqus) vs. numgeo](validation/umat-vs-numgeo.md)
+validation shows the same physics coming out of Abaqus as out of numgeo directly.
 
 ```mermaid
 flowchart LR
@@ -76,7 +77,7 @@ flowchart LR
     C["compatibility_numgeo_.f90<br/>+ precision_.f90"] --> A{{shared by all three}}
     A --> D["incrementalDriver.f<br/>+ material_models.f90"]
     A --> E["calibrate_hs_bricks.f90"]
-    A --> F["umat_hardening_soil_MN_bricks_.f90"]
+    A --> F["user.for + umat.f90<br/>+ sdvini.f90"]
     D --> D2["Element-test simulations"]
     E --> E2["alpha, Hpp"]
     F --> F2["Abaqus analyses"]
