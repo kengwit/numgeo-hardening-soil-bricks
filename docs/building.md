@@ -1,16 +1,18 @@
 # Building the code
 
-Ready-to-use **Visual Studio** project files are provided for all three components, so you can
-get started without setting up a build system by hand. A portable `gfortran` command line is also
-given for every project, for Linux/macOS or if you simply prefer the command line.
+Ready-to-use **Visual Studio** projects are provided for the incremental driver and the
+calibration tool, so you can get started without setting up a build system by hand. The UMAT
+interface is built by Abaqus itself as part of a job rather than with a separate project — see
+[UMAT (Abaqus) interface](components/umat.md) for the one compiler setting it needs. A portable
+`gfortran` command line is also given for every component, for Linux/macOS or if you simply
+prefer the command line.
 
 ## Visual Studio projects
 
 ```
 VisualStudio/
 ├── IncrementalDriver/               → example/driver.exe  (console application)
-├── numgeo-hs-bricks-calibration/    → numgeo-hs-bricks-calibration.exe  (console application)
-└── umat/                            → umat.dll  (dynamic library)
+└── numgeo-hs-bricks-calibration/    → numgeo-hs-bricks-calibration.exe  (console application)
 ```
 
 Each folder contains an Intel Fortran project (`.vfproj`) and solution (`.sln`) file. Open the
@@ -36,8 +38,8 @@ the DEC-style double-precision intrinsics `dsqrt`, `dabs`, `dexp`, `dlog`, `dcos
       src/numgeo-hs-bricks/precision_.f90 \
       src/numgeo-hs-bricks/compatibility_numgeo_.f90 \
       src/numgeo-hs-bricks/numgeo_hardening_soil_MN_bricks_.f90 \
-      src/numgeo-hs-bricks/material_models.f90 \
-      src/numgeo-hs-bricks/incrementalDriver.f \
+      src/incremental-driver/material_models.f90 \
+      src/incremental-driver/incrementalDriver.f \
       -o IncrementalDriver
     ```
 
@@ -45,9 +47,9 @@ the DEC-style double-precision intrinsics `dsqrt`, `dabs`, `dexp`, `dlog`, `dcos
 
     ```bash
     gfortran -fdec-math -ffree-line-length-none -O2 \
-      src/numgeo-hs-bricks-calibration/precision_.f90 \
-      src/numgeo-hs-bricks-calibration/compatibility_numgeo_.f90 \
-      src/numgeo-hs-bricks-calibration/numgeo_hardening_soil_MN_bricks_.f90 \
+      src/numgeo-hs-bricks/precision_.f90 \
+      src/numgeo-hs-bricks/compatibility_numgeo_.f90 \
+      src/numgeo-hs-bricks/numgeo_hardening_soil_MN_bricks_.f90 \
       src/numgeo-hs-bricks-calibration/calibrate_hs_bricks.f90 \
       -o numgeo-hs-bricks-calibration
     ```
@@ -56,15 +58,18 @@ the DEC-style double-precision intrinsics `dsqrt`, `dabs`, `dexp`, `dlog`, `dcos
 
     ```bash
     gfortran -fdec-math -ffree-line-length-none -O2 -shared -fPIC \
-      src/hs-bricks-umat/precision_.f90 \
-      src/hs-bricks-umat/compatibility_numgeo_.f90 \
-      src/hs-bricks-umat/numgeo_hardening_soil_MN_bricks_.f90 \
-      src/hs-bricks-umat/umat_hardening_soil_MN_bricks_.f90 \
+      src/numgeo-hs-bricks/precision_.f90 \
+      src/numgeo-hs-bricks/compatibility_numgeo_.f90 \
+      src/numgeo-hs-bricks/numgeo_hardening_soil_MN_bricks_.f90 \
+      src/hs-bricks-umat/umat.f90 \
       -o umat.so
     ```
 
-    For Abaqus specifically, compile the same four files as part of the Abaqus `user=` subroutine
-    build rather than as a standalone shared library — see [UMAT (Abaqus) interface](components/umat.md).
+    This is only useful for testing the UMAT logic standalone. For actual Abaqus use, do **not**
+    build it this way — hand Abaqus `src/hs-bricks-umat/user.for` directly (with the `/free`
+    compiler setting and folder layout described on the
+    [UMAT (Abaqus) interface](components/umat.md) page) and let Abaqus's own build step compile
+    it as part of the job.
 
 !!! note "Compile order matters"
     In every case, `precision_.f90` must be compiled before `compatibility_numgeo_.f90`, which

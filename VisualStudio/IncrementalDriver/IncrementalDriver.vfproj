@@ -52,17 +52,15 @@
 	</Configurations>
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd;h;inc">
-			<File RelativePath="..\..\src\numgeo-hs-bricks\resource.h"/>
+			<File RelativePath="..\..\src\incremental-driver\resource.h"/>
 		</Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
-			<File RelativePath="..\..\src\numgeo-hs-bricks\version.rc">
-			</File>
+			<File RelativePath="..\..\src\incremental-driver\version.rc"/>
 		</Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 			<File RelativePath="..\..\src\numgeo-hs-bricks\compatibility_numgeo_.f90"/>
-			<File RelativePath="..\..\src\numgeo-hs-bricks\incrementalDriver.f">
-			</File>
-			<File RelativePath="..\..\src\numgeo-hs-bricks\material_models.f90"/>
+			<File RelativePath="..\..\src\incremental-driver\incrementalDriver.f"/>
+			<File RelativePath="..\..\src\incremental-driver\material_models.f90"/>
 			<File RelativePath="..\..\src\numgeo-hs-bricks\numgeo_hardening_soil_MN_bricks_.f90"/>
 			<File RelativePath="..\..\src\numgeo-hs-bricks\precision_.f90"/>
 		</Filter>

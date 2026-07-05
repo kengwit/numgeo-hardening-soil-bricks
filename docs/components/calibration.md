@@ -36,12 +36,14 @@ of your real parameter file (or Abaqus material card) by hand.
 
 | | |
 |---|---|
-| Source folder | `src/numgeo-hs-bricks-calibration/` |
-| Files | `calibrate_hs_bricks.f90` · `numgeo_hardening_soil_MN_bricks_.f90` · `compatibility_numgeo_.f90` · `precision_.f90` |
-| Visual Studio project | `VisualStudio/numgeo-hs-bricks-calibration/` |
+| Source folder | `src/numgeo-hs-bricks-calibration/` (`calibrate_hs_bricks.f90`) + `src/numgeo-hs-bricks/` (shared: `numgeo_hardening_soil_MN_bricks_.f90`, `compatibility_numgeo_.f90`, `precision_.f90`) |
+| Visual Studio project | `VisualStudio/numgeo-hs-bricks-calibration/` — open the `.sln` and build; no manual compiler setup needed |
 | Executable | `numgeo-hs-bricks-calibration.exe` |
 
-See [Building the code](../building.md) for compiling it yourself.
+See [Building the code](../building.md) if you want to build it yourself with this Visual Studio
+project (or with `gfortran`), or use the ready-built executable in `examples/Calibration/`
+directly (see [Examples](../examples.md#calibration-example)) — just remember it must be started
+from the command prompt, not double-clicked (see the warning above).
 
 ## Input file format
 

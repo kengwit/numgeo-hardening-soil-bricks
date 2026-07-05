@@ -33,6 +33,10 @@ Acta Geotechnica, 15, 2031–2051.
 *Retaining structures: displacement and design.* 32nd Rankine Lecture.
 Géotechnique, 42(4), 541–576.
 
+[7] Obrzud, R., Truty, A. (2025).
+*The Hardening Soil Model — A Practical Guidebook.* Report 301125.
+[:octicons-link-external-16: PDF](https://www.zsoil.com/zsoil_manual/Rep-HS-model.pdf){ target="_blank" }
+
 ---
 
 See also the [numgeo documentation](https://j-machacek.github.io/numgeo/){ target="_blank" } for

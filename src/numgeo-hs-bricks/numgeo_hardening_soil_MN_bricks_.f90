@@ -64,6 +64,7 @@
 !>* 01.07.2026, J. Machacek - HS-Brick small-strain extension following Cudny & Truty [5]
 !                           - hardening enhancement H_i (Eqs. 22-24 in [5]) for cone (return mappings) and cap (pre-scaled hc);
 !                           - new props(15) = gamma07 and props(16) = G0ref; state variables 6-73 (Gm, n_bricks, man/brick strains);
+!>* 04.07.2026, J. Machacek - For the use in Abaqus, we need to check for (istep == 1 .and. iinc == 0) to determine the first increment.
 !
 !> References
 !
@@ -500,7 +501,7 @@ module material_hardening_soil_MN_bricks_
        sin_psi_mob_trial = get_mob_dilatancy_angle(sin_phi_mob_trial, mat%sin_phi_cs, mat%apex, Mcs, p_trial, q_trial)
        
        ! Initialise state variables. Only if pp0 (statev(3)) arrives as <= 0, i.e. genuinely unset by the caller
-       if (istep == 1 .and. iinc == 1 ) then
+       if (istep == 1 .and. iinc == 0 ) then
          gammapss0 = -(-3.0_rk/2.0_rk*q_trial/Ei+3.0_rk/2.0_rk*q_trial/Eur*((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial-mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) & 
                      / (1.0_rk-sin_phi_mob_trial) * sin_phi_mob_trial)/((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial-mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) & 
                      * (1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial
@@ -1996,7 +1997,7 @@ module material_hardening_soil_MN_bricks_
   !> date: 01.07.2026
   !
   !> Read the BRICK state from the state variable array (see module header for the layout).
-  !> On the first call (istep == 1 .and. iinc == 1) the state is initialised to the virgin state:
+  !> On the first call (istep == 1 .and. iinc == 0) the state is initialised to the virgin state:
   !> all strings slack, man and brick strains at zero, Gm at its upper bound Gm_max (no degradation
   !> recorded yet). An uninitialised state read back from the array (Gm < 1) is treated likewise.
   !
@@ -2022,7 +2023,7 @@ module material_hardening_soil_MN_bricks_
     end if
     
     ! Initialise state variables
-    if (istep == 1 .and. iinc == 1) then
+    if (istep == 1 .and. iinc == 0) then
       Gm = mat%Gm_max
       sn = 0.0_rk
       snb = 0.0_rk

@@ -59,9 +59,9 @@
 		</Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 			<File RelativePath="..\..\src\numgeo-hs-bricks-calibration\calibrate_hs_bricks.f90"/>
-			<File RelativePath="..\..\src\numgeo-hs-bricks-calibration\compatibility_numgeo_.f90"/>
-			<File RelativePath="..\..\src\numgeo-hs-bricks-calibration\numgeo_hardening_soil_MN_bricks_.f90"/>
-			<File RelativePath="..\..\src\numgeo-hs-bricks-calibration\precision_.f90"/>
+			<File RelativePath="..\..\src\numgeo-hs-bricks\compatibility_numgeo_.f90"/>
+			<File RelativePath="..\..\src\numgeo-hs-bricks\numgeo_hardening_soil_MN_bricks_.f90"/>
+			<File RelativePath="..\..\src\numgeo-hs-bricks\precision_.f90"/>
 		</Filter>
 	</Files>
 	<Globals/>

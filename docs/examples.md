@@ -1,12 +1,13 @@
 # Examples
 
-Two ready-to-run examples are shipped in `examples/`, each with its pre-built executable already
-sitting next to its input files.
+Three ready-to-run examples are shipped in `examples/`: two with pre-built executables already
+sitting next to their input files, and one Abaqus input deck for the UMAT interface.
 
 ```
 examples/
 ├── IncrementalDriver/     → IncrementalDriver.exe + input files + pre-computed results
-└── Calibration/           → numgeo-hs-bricks-calibration.exe + parameters.inp
+├── Calibration/           → numgeo-hs-bricks-calibration.exe + parameters.inp
+└── umat/                  → triax-hs-bricks.inp (Abaqus input deck)
 ```
 
 ## Incremental-driver example
@@ -80,3 +81,18 @@ tool.
     — which are exactly the `alpha`/`Hpp` values already used in
     `examples/IncrementalDriver/parameters.inp`, confirming the two examples are consistent with
     each other.
+
+## UMAT example
+
+`examples/umat/triax-hs-bricks.inp` is a complete Abaqus input deck for the UMAT interface: a
+single `CAX4` (axisymmetric) element, a `*Geostatic` step establishing the initial stress state,
+followed by a drained triaxial compression `*Static` step. See
+[UMAT (Abaqus) interface](components/umat.md) for the `/free` compiler setting and the folder
+layout (`user.for` + `umat.f90` + the `numgeo-hs-bricks` subfolder) this deck's `*User Material`
+needs at the location the job is run from.
+
+This example exercises the geostatic-to-loading transition specifically — the sequence in which
+the initial preconsolidation state must be established correctly on the very first call and then
+carried forward into the loading step without being silently reset (see the
+[Model parameters](parameters.md#the-internal-constants-alpha-and-hpp) page and the module's own
+revision history for background on this initialisation logic).
