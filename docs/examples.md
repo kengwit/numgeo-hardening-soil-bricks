@@ -86,16 +86,77 @@ tool.
 
 `examples/umat/triax-hs-bricks.inp` is a complete, working Abaqus input deck for the UMAT
 interface: a single axisymmetric `CAX4R` element (reduced integration, with hourglass control),
-a step named "Geostatic" (using `*Static`) that establishes the initial stress state via
-`*Initial conditions` and `sdvini.f90` (see [UMAT (Abaqus) interface](components/umat.md#sdvinif90-initialising-state-variables)),
-followed by a drained triaxial compression step driving the top boundary to $-10\,\%$ axial
-strain. See [UMAT (Abaqus) interface](components/umat.md) for the `/free` compiler setting and
-the folder layout (`user.for` + `umat.f90` + `sdvini.f90` + the `numgeo-hs-bricks` subfolder)
-this deck's `*User Material` needs at the location the job is run from.
+a step named "Geostatic" (using `*Static`) that establishes the initial stress state, followed by
+a drained triaxial compression step driving the top boundary to $-10\,\%$ axial strain. Here is
+how to run it, step by step.
 
-Alongside the input deck, this folder also contains the actual results of running it —
-`abaqus-result.dat` — together with a native numgeo run of the same test, `numgeo-result.dat`,
-and the `triax_CD.py` script that produces the comparison figure discussed on
-[UMAT (Abaqus) vs. numgeo](validation/umat-vs-numgeo.md). Re-run `triax_CD.py` from within
-`examples/umat/` (after regenerating `abaqus-result.dat` yourself, if you want to reproduce it
-end-to-end) to rebuild `triax_CD_abq.png`/`.pdf`.
+**1. Copy the constitutive implementation.** Copy the whole `src/numgeo-hs-bricks/` folder into
+the directory where you will run the Abaqus job, keeping it as a subfolder named exactly
+`numgeo-hs-bricks`. These three files *are* the model — everything else in this example is
+plumbing around them:
+
+| File | Task |
+|---|---|
+| `precision_.f90` | Defines the real/integer kinds used throughout. |
+| `compatibility_numgeo_.f90` | Stress-invariant and small linear-algebra helper routines the constitutive routine needs. |
+| `numgeo_hardening_soil_MN_bricks_.f90` | The constitutive routine itself — identical to the one called by the incremental driver and by numgeo directly. |
+
+**2. Copy the three UMAT files** from `src/hs-bricks-umat/` into the *same* directory (as
+siblings of the `numgeo-hs-bricks` subfolder, not inside it):
+
+| File | Task |
+|---|---|
+| `user.for` | The file you actually point Abaqus at. It does no work itself — it just `INCLUDE`s the five files above and below it, in the right order, so Abaqus only has to be told about one file. |
+| `umat.f90` | The actual `subroutine umat(...)`: translates Abaqus' calling convention (stress/strain arrays, `NTENS`, `KINC`, ...) into a call to `hardening_soil_MN_bricks` in the constitutive module, and translates the result back. |
+| `sdvini.f90` | Implements Abaqus' `SDVINI` hook, used in this example to set the initial preconsolidation stress `statev(3)` before the analysis starts — see [UMAT (Abaqus) interface: sdvini.f90](components/umat.md#sdvinif90-initialising-state-variables). |
+
+**3. Copy the input deck**, `examples/umat/triax-hs-bricks.inp`, into the same directory.
+
+You should now have:
+
+```
+your-abaqus-working-directory/
+├── triax-hs-bricks.inp
+├── user.for
+├── umat.f90
+├── sdvini.f90
+└── numgeo-hs-bricks/
+    ├── precision_.f90
+    ├── compatibility_numgeo_.f90
+    └── numgeo_hardening_soil_MN_bricks_.f90
+```
+
+**4. Set the `/free` compiler flag** in your Abaqus environment file, so that `user.for` compiles
+as free-form Fortran despite its `.for` extension — see
+[UMAT (Abaqus) interface: compiler settings](components/umat.md#abaqus-compiler-settings-free-form-fortran)
+for exactly where this goes for your Abaqus version. This only needs to be done once per
+installation, not once per job.
+
+**5. Run the job** from that directory:
+
+```
+abaqus inp=triax-hs-bricks user=user
+```
+
+No `job=` is given, so Abaqus names the job after the input file, `triax-hs-bricks` — you will get
+`triax-hs-bricks.dat`, `.odb`, `.msg`, etc. The stress/strain history requested by the deck's
+`*El Print` lines is written to the `.dat` file.
+
+## Comparing the UMAT result against numgeo
+
+The same test run through Abaqus/UMAT and through native numgeo, with identical parameters and
+loading, agree closely:
+
+<figure class="hsb-fig-wrap" markdown>
+![Abaqus UMAT vs. native numgeo](assets/figures/hs-mn-bricks-umat-vs-numgeo.png){ .hsb-fig }
+<figcaption>
+Drained triaxial compression to $-10\,\%$ axial strain: Abaqus (via the UMAT interface) against
+native numgeo, for identical parameters and loading.
+</figcaption>
+</figure>
+
+`examples/umat/` ships everything behind this figure: `abaqus-result.dat` (the result of the run
+above), `numgeo-result.dat` (the same test run through numgeo directly), and `triax_CD.py`, the
+script that reads both and produces this plot. See
+[UMAT (Abaqus) vs. numgeo](validation/umat-vs-numgeo.md) for the quantified agreement and what
+this comparison does and doesn't validate.
