@@ -26,6 +26,8 @@ prescribed initial stress, and steps it through a prescribed strain- or stress-c
 path, calling the UMAT interface at every increment. Results (strains, stresses and state
 variables at every increment) are written to a single output file.
 
+---
+
 ## Source & build
 
 | | |
@@ -41,6 +43,8 @@ executable in `examples/IncrementalDriver/` directly (see below).
     `examples/IncrementalDriver/IncrementalDriver.exe` is already built and sitting next to a
     working set of input files — just double-click it to run the shipped example, no build step
     required. See [Examples](../examples.md#incremental-driver-example).
+
+---
 
 ## Input files
 
@@ -107,6 +111,8 @@ its working directory:
     in that case `material_models.f90` calls `optimize_hs_bricks_internal_constants` once, at the
     first increment, and prints the calibrated values to the console (see
     [Model parameters](../parameters.md#the-internal-constants-alpha-and-hpp)).
+
+---
 
 ## Running it
 
@@ -177,6 +183,8 @@ small-strain stiffness ratio) and `statev(7)` (`n_bricks`, the number of current
     in that case `material_models.f90` calls `optimize_hs_bricks_internal_constants` once, at the
     first increment, and prints the calibrated values to the console (see
     [Model parameters](../parameters.md#the-internal-constants-alpha-and-hpp)).
+
+---
 
 ## Running it
 

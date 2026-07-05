@@ -10,6 +10,8 @@ examples/
 └── umat/                  → triax-hs-bricks.inp (Abaqus input deck)
 ```
 
+---
+
 ## Incremental-driver example
 
 `examples/IncrementalDriver/` contains a drained (CD) triaxial compression test on the glacial
@@ -48,6 +50,8 @@ deviatoric stress <em>q</em> and volumetric strain <em>ε<sub>v</sub></em> again
 </figcaption>
 </figure>
 
+---
+
 ## Calibration example
 
 `examples/Calibration/` contains the same glacial-till parameters, but with `alpha = Hpp = 0` in
@@ -81,6 +85,8 @@ tool.
     — which are exactly the `alpha`/`Hpp` values already used in
     `examples/IncrementalDriver/parameters.inp`, confirming the two examples are consistent with
     each other.
+
+---
 
 ## UMAT example
 
@@ -142,7 +148,7 @@ No `job=` is given, so Abaqus names the job after the input file, `triax-hs-bric
 `triax-hs-bricks.dat`, `.odb`, `.msg`, etc. The stress/strain history requested by the deck's
 `*El Print` lines is written to the `.dat` file.
 
-## Comparing the UMAT result against numgeo
+### Comparing the UMAT result against numgeo
 
 The same test run through Abaqus/UMAT and through native numgeo, with identical parameters and
 loading, agree closely:

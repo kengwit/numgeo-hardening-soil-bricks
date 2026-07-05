@@ -32,6 +32,8 @@ runs `optimize_hs_bricks_internal_constants`, and prints the resulting `alpha` a
 screen. It does **not** modify the input file — copy the printed values into `props(13)`/`props(14)`
 of your real parameter file (or Abaqus material card) by hand.
 
+---
+
 ## Source & build
 
 | | |
@@ -45,6 +47,8 @@ project (or with `gfortran`), or use the ready-built executable in `examples/Cal
 directly (see [Examples](../examples.md#calibration-example)) — just remember it must be started
 from the command prompt, not double-clicked (see the warning above).
 
+---
+
 ## Input file format
 
 The expected file uses exactly the format of `parameters.inp` (see
@@ -53,6 +57,8 @@ The expected file uses exactly the format of `parameters.inp` (see
 are overwritten by the calibration; `gamma07`/`G0` (parameters 15/16) must still be valid, even
 though they do not influence the calibrated result, because the model's own parameter validation
 runs before the calibration.
+
+---
 
 ## Example session
 

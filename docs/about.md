@@ -17,6 +17,8 @@ This implementation is a development of **Jan Machaček**, **Leonardo José Cocc
 
 Questions, bug reports and feedback on this repository are welcome through either channel above.
 
+---
+
 ## numgeo
 
 <div class="hsb-grid" markdown>
@@ -39,6 +41,8 @@ a standalone element-test driver. <br>
 </div>
 
 </div>
+
+---
 
 ## License &amp; availability
 

@@ -22,6 +22,8 @@ truth, so that this repository's documentation and the numgeo documentation neve
     - The internal calibration procedure for $\alpha$ and $H_{pp}$
     - The full `props`/`statev` array layout
 
+---
+
 ## What's specific to this repository
 
 The theory manual describes the *model*, independent of how it is called. What this repository

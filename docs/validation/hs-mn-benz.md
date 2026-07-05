@@ -5,6 +5,8 @@ small-strain extension deactivated, by back-calculating six element tests from B
 dissertation&nbsp;[3]: three drained (TX-CD) and three undrained (TX-CU) triaxial compression
 tests at different initial mean effective stresses $p_0'$.
 
+---
+
 ## Parameters
 
 Dense Hostun sand (stiffnesses and stresses in kPa):
@@ -24,6 +26,8 @@ Dense Hostun sand (stiffnesses and stresses in kPa):
     [BRICK extension vs. ZSoil](hs-mn-bricks-zsoil.md) for the small-strain extension itself, and
     [Model parameters](../parameters.md) for how $\gamma_{0.7} = G_0^{ref}/G_{ur}^{ref}$
     degenerates the model exactly to the base model.
+
+---
 
 ## Result
 

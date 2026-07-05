@@ -7,6 +7,8 @@ repository. For the meaning of the underlying physical quantities, see the
 All three components described under [Components](components/index.md) — the incremental driver,
 the calibration tool and the UMAT interface — use exactly this layout.
 
+---
+
 ## Model identifier
 
 The model is selected by name:
@@ -21,6 +23,8 @@ Hardening-Soil-MN-Bricks
     therefore compares the **first whitespace-delimited token** of the material name exactly,
     rather than searching for it as a substring — a substring search would risk one model
     silently swallowing requests meant for the other.
+
+---
 
 ## Material parameters (`props`)
 
@@ -52,6 +56,8 @@ The model requires **`nprops = 16`** parameters, in the following order:
     switching models. Both conditions are checked and enforced with a diagnostic `error stop` if
     violated.
 
+---
+
 ## State variables (`statev`)
 
 The model requires **`nstatev = 73`** state variables:
@@ -73,10 +79,14 @@ All 73 state variables can be initialised to zero. On the very first increment o
 in the base model), and the BRICK state (variables 6–73) to the virgin small-strain condition:
 `Gm = G0/Gur_ref`, no strings taut yet.
 
+---
+
 ## Sign convention
 
 Stress and strain follow the standard Abaqus/numgeo convention: **compression is negative**.
 Voigt components are ordered `[11, 22, 33, 12, 13, 23]`.
+
+---
 
 ## The internal constants `alpha` and `Hpp`
 

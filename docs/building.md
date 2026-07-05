@@ -7,6 +7,8 @@ interface is built by Abaqus itself as part of a job rather than with a separate
 `gfortran` command line is also given for every component, for Linux/macOS or if you simply
 prefer the command line.
 
+---
+
 ## Visual Studio projects
 
 ```
@@ -23,6 +25,8 @@ and **x64** (recommended) or **Win32**, and build.
 Each project's `Source Files` filter lists exactly the files given in that component's page under
 [Components](components/index.md) — nothing is hidden or auto-generated beyond the usual `.mod`/`.obj`
 intermediates.
+
+---
 
 ## Command-line build (gfortran)
 

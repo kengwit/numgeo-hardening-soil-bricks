@@ -48,6 +48,8 @@ so it acts as a small library for all of them — `user.for` is the only file yo
     Run the job with `abaqus job=... user=user.for ...` (or select `user.for` as the user
     subroutine file in Abaqus/CAE).
 
+---
+
 ## `sdvini.f90`: initialising state variables
 
 `sdvini.f90` implements Abaqus' `SDVINI` user subroutine, which Abaqus calls once per
@@ -77,6 +79,8 @@ at the default `0.0` (i.e. omitting `SDVINI`, or an `SDVINI` that does not touch
 lets the model auto-initialise it to a normally consolidated state instead. Either way, this
 relies on the model respecting a caller-prescribed `pp` rather than silently overwriting it — see
 the constitutive module's own revision history for the initialisation logic this depends on.
+
+---
 
 ## Abaqus compiler settings: free-form Fortran
 
@@ -109,6 +113,8 @@ The exact default location depends on your Abaqus version, for example:
     a standalone Visual Studio project — it is compiled by Abaqus itself, as part of the job, once
     the settings above are in place. See [Building the code](../building.md) for the full picture
     across all three components.
+
+---
 
 ## Using it in Abaqus
 
@@ -147,6 +153,8 @@ The exact default location depends on your Abaqus version, for example:
     [start it from the command prompt](calibration.md), or the printed result will vanish with
     the closing console window — and pass the resulting `alpha`/`Hpp` in as ordinary, fixed
     material properties.
+
+---
 
 ## Acknowledgements
 
