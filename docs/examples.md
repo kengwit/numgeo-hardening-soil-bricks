@@ -156,7 +156,7 @@ loading, agree closely:
 <figure class="hsb-fig-wrap" markdown>
 ![Abaqus UMAT vs. native numgeo](assets/figures/hs-mn-bricks-umat-vs-numgeo.png){ .hsb-fig }
 <figcaption>
-Drained triaxial compression to $-10\,\%$ axial strain: Abaqus (via the UMAT interface) against
+Drained triaxial compression to -10% axial strain: Abaqus (via the UMAT interface) against
 native numgeo, for identical parameters and loading.
 </figcaption>
 </figure>

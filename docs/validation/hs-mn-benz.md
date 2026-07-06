@@ -34,8 +34,7 @@ Dense Hostun sand (stiffnesses and stresses in kPa):
 <figure class="hsb-fig-wrap" markdown>
 ![Base HS-MN model vs. Benz (2007)](../assets/figures/hs-mn-benz-validation.png){ .hsb-fig }
 <figcaption>
-Drained (TX-CD, $p_0' = 100, 300, 600$&nbsp;kPa) and undrained (TX-CU, $p_0' = 200, 300,
-600$&nbsp;kPa) triaxial compression: stress ratio and volumetric strain (drained), effective
+Drained (TX-CD) and undrained (TX-CU) triaxial compression: stress ratio and volumetric strain (drained), effective
 stress path and deviatoric stress (undrained), against the reference curves back-calculated from
 Benz&nbsp;[3].
 </figcaption>
