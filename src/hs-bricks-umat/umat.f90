@@ -9,8 +9,8 @@
 ! DESCRIPTION:
 !> Minimal Abaqus UMAT interface for the Hardening-Soil-MN-Bricks model, forming a small
 !> standalone library together with precision_.f90, compatibility_numgeo_.f90 and
-!> numgeo_hardening_soil_MN_bricks_.f90 (the numgeo constitutive module and its compatibility
-!> layer, unmodified, see README.md in this folder). No other file in this library depends on
+!> numgeo_hardening_soil_MN_bricks_.f90 (the standalone copy of the current numgeo constitutive
+!> module and its compatibility layer, see README.md in this folder). No other file in this library depends on
 !> anything outside these four files: it can be dropped into any UMAT-based build (Abaqus, or any
 !> other host that calls a Fortran UMAT-convention subroutine) on its own, without the
 !> incrementalDriver/tools/example infrastructure of the fuller numgeo-hardening-soil repository.
@@ -30,6 +30,8 @@
 !                            substring match is unsafe once another model name is a prefix of this
 !                            one (as is the case here, 'Hardening-Soil-MN' is a prefix of
 !                            'Hardening-Soil-MN-Bricks').
+!>* 21.08.2026, J. Machacek - Reject unsupported stress-vector layouts before entering the model
+!                           - Use modern character declarations
 !
 !=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
   
@@ -48,7 +50,7 @@ subroutine umat(stress,statev,ddsdde,sse,spd,scd,rpl,ddsddt,drplde,drpldt, &
 
   implicit none
 
-  character*80 cmname
+  character(len=80) :: cmname
 
   integer :: ntens,nstatev,nprops,ndi,nshr,noel,npt,layer,kspt,kstep,kinc
 
@@ -59,7 +61,7 @@ subroutine umat(stress,statev,ddsdde,sse,spd,scd,rpl,ddsddt,drplde,drpldt, &
               props(nprops),coords(3),drot(3,3),dfgrd0(3,3),dfgrd1(3,3)
 
   ! For compatibility with numgeo
-  character*50 :: model                     ! string for identifying the material model to be called
+  character(len=80) :: model                     ! string for identifying the material model to be called
 
   integer(ik), parameter :: NPROPS_REQUIRED = 16    ! Hardening-Soil-MN-Bricks: props(15)=gamma07, props(16)=G0ref
   integer(ik), parameter :: NSTATEV_REQUIRED = 73   ! statev(6)=Gm, statev(7)=n_bricks, statev(8:73)=brick strain history
@@ -82,6 +84,12 @@ subroutine umat(stress,statev,ddsdde,sse,spd,scd,rpl,ddsddt,drplde,drpldt, &
   if (isp > 1) model = model(1:isp-1)
 
   if (model == 'HARDENING-SOIL-MN-BRICKS') then
+
+    if (ndi /= 3 .or. (ntens /= 4 .and. ntens /= 6)) then
+      write(*,*) 'Error: Hardening-Soil-MN-Bricks supports only NTENS=4 or NTENS=6 with NDI=3.'
+      write(*,*) ' NDI = ', ndi, ', NSHR = ', nshr, ', NTENS = ', ntens
+      stop
+    end if
 
     !
     ! Hardening Soil model with Matsuoka-Nakai yield surface and BRICK small-strain stiffness
@@ -114,18 +122,19 @@ subroutine umat(stress,statev,ddsdde,sse,spd,scd,rpl,ddsddt,drplde,drpldt, &
       ! 1) using statevs to store the two parameters. Then the material model needs some modification.
       ! 2) using uexternaldb to interact with abaqus before the first call of the constitutive model
       
-	  ! call optimize_hs_bricks_internal_constants(props, NPROPS_REQUIRED)
+    ! call optimize_hs_bricks_internal_constants(props, NPROPS_REQUIRED)
       ! write(*,*) 'Hardening-Soil-MN-Bricks model determined internal constants using optimisation process: ' // &
       !           'alpha = ', props(13), ', Hpp = ', props(14), '.'
 
-	  write(*,*) 'Hardening-Soil-MN-Bricks model internal constants alpha and Hpp are zero ' // & 
+    write(*,*) 'Hardening-Soil-MN-Bricks model internal constants alpha and Hpp are zero ' // & 
                  'We suggest to use the small executable numgeo-hs-bricks-calibration also ' // &
-				 'shipped with this code to calibrate the parameters beforehand and pass ' // &
+         'shipped with this code to calibrate the parameters beforehand and pass ' // &
                  'them via the props array'
-	  stop
+    stop
     end if
 
-    call hardening_soil_MN_bricks(stress,statev,ddsdde,dstran,time(1),dtime,ntens,nstatev,props,nprops,kstep,kinc)
+    call hardening_soil_MN_bricks(stress,statev,ddsdde,dstran,time(1),dtime,ntens,nstatev, &
+                                  props,nprops,kstep,kinc)
 
   else
 

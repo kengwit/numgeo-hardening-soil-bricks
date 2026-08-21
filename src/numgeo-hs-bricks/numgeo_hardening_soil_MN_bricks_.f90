@@ -63,8 +63,12 @@
 !                           - H_GAMMA module constant; error stop on NaN; optimiser .or.->.and.; minor fixes
 !>* 01.07.2026, J. Machacek - HS-Brick small-strain extension following Cudny & Truty [5]
 !                           - hardening enhancement H_i (Eqs. 22-24 in [5]) for cone (return mappings) and cap (pre-scaled hc);
-!                           - new props(15) = gamma07 and props(16) = G0ref; state variables 6-73 (Gm, n_bricks, man/brick strains);
-!>* 04.07.2026, J. Machacek - For the use in Abaqus, we need to check for (istep == 1 .and. iinc == 0) to determine the first increment.
+!                           - new props(15) = gamma07 and props(16) = G0ref; state variables 6-73 (Gm, n_bricks, man/brick strains)
+!>* 20.07.2026, J. Machacek - Correct engineering-shear Voigt derivatives of cone and cap functions
+!                           - Preserve return mapping, substepping, public interfaces and state-variable history
+!>* 21.08.2026, J. Machacek - Synchronise the standalone UMAT source with the current numgeo implementation
+!                           - Restore first-increment state initialisation for iinc == 1
+!                           - Use standard-conforming declaration order for dummy array bounds
 !
 !> References
 !
@@ -183,24 +187,26 @@ module material_hardening_soil_MN_bricks_
   !                           - commit brick state on vertex early return; extended NaN diagnostics
   !>* 03.07.2026, J. Machacek - Only auto-initialise pp0 (and gammapss0) on the first increment of an analysis
   !                           - if pp0 arrives as statev(3) <= 0 (i.e. genuinely not set by the caller).
+  !>* 21.08.2026, J. Machacek - Restore first-increment state initialisation for iinc == 1 in the standalone UMAT copy
+  !                           - Use standard-conforming declaration order for dummy array bounds
   !
 
   subroutine hardening_soil_MN_bricks(stress,statev,dds_dde,dstrain,time,dtime,ntens,nstatev,props,nprops,istep,iinc)
     use compatibility_numgeo_, only: cartesian_to_principal_stress_analytical, roscoe_pq_voigt, invariant_J2, invariants_J2_J3
     implicit none
     
-    real(rk), dimension(ntens), intent(inout) :: stress
-    real(rk), dimension(nstatev), intent(inout) :: statev
-    real(rk), dimension(ntens,ntens), intent(inout) :: dds_dde
-    real(rk), dimension(ntens), intent(in) :: dstrain
-    real(rk), dimension(nprops), intent(in) :: props
-    real(rk), intent(in):: time
-    real(rk), intent(in):: dtime
     integer, intent(in) :: ntens
     integer, intent(in) :: nstatev
     integer, intent(in) :: nprops
     integer, intent(in) :: istep
     integer, intent(in) :: iinc
+    real(rk), dimension(ntens), intent(inout) :: stress
+    real(rk), dimension(nstatev), intent(inout) :: statev
+    real(rk), dimension(ntens,ntens), intent(inout) :: dds_dde
+    real(rk), dimension(ntens), intent(in) :: dstrain
+    real(rk), dimension(nprops), intent(in) :: props
+    real(rk), intent(in) :: time
+    real(rk), intent(in) :: dtime
 
     real(rk) :: fs, fc, tanbeta, dstrain_sub(ntens)
                 
@@ -393,8 +399,9 @@ module material_hardening_soil_MN_bricks_
            
            if ( sin_phi_mob > mat%sin_phi) then
            
-              call return_mapping_failure_surface(stress_trial,ntens,fs_trial,mat,Eur,Ei,dds_dde,gammapss0,gammapss,p_trial,q_trial,&
-                                                  stress,p,q,mat%sin_phi_cs,Mcs,fs,chi,sin_phi_mob,sin_psi_mob,sin_phi_mob_trial,sin_psi_mob_trial)
+              call return_mapping_failure_surface(stress_trial,ntens,fs_trial,mat,Eur,Ei,dds_dde,gammapss0, &
+                                                  gammapss,p_trial,q_trial,stress,p,q,mat%sin_phi_cs,Mcs,fs,chi, &
+                                                  sin_phi_mob,sin_psi_mob,sin_phi_mob_trial,sin_psi_mob_trial)
                     
            end if
            
@@ -501,10 +508,11 @@ module material_hardening_soil_MN_bricks_
        sin_psi_mob_trial = get_mob_dilatancy_angle(sin_phi_mob_trial, mat%sin_phi_cs, mat%apex, Mcs, p_trial, q_trial)
        
        ! Initialise state variables. Only if pp0 (statev(3)) arrives as <= 0, i.e. genuinely unset by the caller
-       if (istep == 1 .and. iinc == 0 ) then
-         gammapss0 = -(-3.0_rk/2.0_rk*q_trial/Ei+3.0_rk/2.0_rk*q_trial/Eur*((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial-mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) & 
-                     / (1.0_rk-sin_phi_mob_trial) * sin_phi_mob_trial)/((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial-mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) & 
-                     * (1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial
+       if (istep == 1 .and. iinc == 1 ) then
+         gammapss0 = -( -1.5_rk*q_trial/Ei + 1.5_rk*q_trial/Eur * ((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial - &
+                       mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) / (1.0_rk-sin_phi_mob_trial) * sin_phi_mob_trial ) / &
+                       ((1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial - mat%Rf*(1.0_rk-mat%sin_phi)/mat%sin_phi) * &
+                       (1.0_rk-sin_phi_mob_trial)/sin_phi_mob_trial
          if (pp0 <= 0.0_rk) pp0 = dsqrt( q_trial**2/(chi*mat%alpha)**2 + (p_trial+mat%apex)**2 ) - mat%apex
        end if
        
@@ -1528,11 +1536,11 @@ module material_hardening_soil_MN_bricks_
   subroutine enforce_vertex(p,q,stress,apex,ntens)
     implicit none
     
+    integer, intent(in) :: ntens
     real(rk), intent(inout) :: p
     real(rk), intent(inout) :: q
     real(rk), intent(inout) :: stress(ntens)
     real(rk), intent(in) :: apex
-    integer, intent(in) :: ntens
     
     p = -apex
     q = 0.0_rk
@@ -1997,7 +2005,7 @@ module material_hardening_soil_MN_bricks_
   !> date: 01.07.2026
   !
   !> Read the BRICK state from the state variable array (see module header for the layout).
-  !> On the first call (istep == 1 .and. iinc == 0) the state is initialised to the virgin state:
+  !> On the first call (istep == 1 .and. iinc == 1) the state is initialised to the virgin state:
   !> all strings slack, man and brick strains at zero, Gm at its upper bound Gm_max (no degradation
   !> recorded yet). An uninitialised state read back from the array (Gm < 1) is treated likewise.
   !
@@ -2023,7 +2031,7 @@ module material_hardening_soil_MN_bricks_
     end if
     
     ! Initialise state variables
-    if (istep == 1 .and. iinc == 0) then
+    if (istep == 1 .and. iinc == 1) then
       Gm = mat%Gm_max
       sn = 0.0_rk
       snb = 0.0_rk
@@ -2093,6 +2101,7 @@ module material_hardening_soil_MN_bricks_
   !>* 27.12.2025, J. Machacek - Simplification and speed-up (2-3x faster)
   !>* 03.03.2025, J. Machacek - Further simplification and some speed-up
   !>* 01.06.2026, J. Machacek - Interface: pass precomputed Rf_eta_phi instead of (sin_phi, Rf), remove dead Mc3 store
+  !>* 20.07.2026, J. Machacek - Correct cone derivatives for engineering-shear Voigt coordinates
   !
   subroutine df_dg_cone(stress, ntens, m, m2, n, zeta, Rf_eta_phi, sin_psi_mob, Eur, Ei, chi, apex, gammapss)
     implicit none
@@ -2177,10 +2186,10 @@ module material_hardening_soil_MN_bricks_
     m(1) = m_vol - 1.5_rk * inv_q * (S2 + S3)
     m(2) = m_vol - 1.5_rk * inv_q * (S1 + S3)
     m(3) = m_vol - 1.5_rk * inv_q * (S1 + S2)
-    m(4) = 1.5_rk * inv_q * S12
+    m(4) = 3.0_rk * inv_q * S12
     if (ntens == 6) then
-      m(5) = 1.5_rk * inv_q * S13
-      m(6) = 1.5_rk * inv_q * S23
+      m(5) = 3.0_rk * inv_q * S13
+      m(6) = 3.0_rk * inv_q * S23
     end if
     
     !
@@ -2192,37 +2201,37 @@ module material_hardening_soil_MN_bricks_
     m2(1,1) =  0.75_rk * inv_q3 * (-2.0_rk*S2S3 + 4.0_rk*S12sq + S2sq + S3sq + 4.0_rk*(S13sq + S23sq))
     m2(1,2) = -0.75_rk * inv_q3 * (S1S2 - S1S3 - S2S3 + 2.0_rk*S12sq + S3sq + 2.0_rk*(S13sq + S23sq))
     m2(1,3) =  0.75_rk * inv_q3 * (S1S2 - S1S3 + S2S3 - 2.0_rk*S12sq - S2sq - 2.0_rk*(S13sq + S23sq))
-    m2(1,4) = -0.75_rk * inv_q3 * (2.0_rk*S1 - S2 - S3) * S12
+    m2(1,4) = -1.5_rk * inv_q3 * (2.0_rk*S1 - S2 - S3) * S12
     
     m2(2,1) = m2(1,2)
     m2(2,2) =  0.75_rk * inv_q3 * (-2.0_rk*S1S3 + 4.0_rk*S12sq + S1sq + S3sq + 4.0_rk*(S13sq + S23sq))
     m2(2,3) = -0.75_rk * inv_q3 * (-S1S2 - S1S3 + S2S3 + 2.0_rk*S12sq + S1sq + 2.0_rk*(S13sq + S23sq))
-    m2(2,4) =  0.75_rk * inv_q3 * (S1 - 2.0_rk*S2 + S3) * S12
+    m2(2,4) =  1.5_rk * inv_q3 * (S1 - 2.0_rk*S2 + S3) * S12
     
     m2(3,1) = m2(1,3)
     m2(3,2) = m2(2,3)
     m2(3,3) =  0.75_rk * inv_q3 * (-2.0_rk*S1S2 + 4.0_rk*S12sq + S1sq + S2sq + 4.0_rk*(S13sq + S23sq))
-    m2(3,4) =  0.75_rk * inv_q3 * (S1 + S2 - 2.0_rk*S3) * S12
+    m2(3,4) =  1.5_rk * inv_q3 * (S1 + S2 - 2.0_rk*S3) * S12
     
     m2(4,1) = m2(1,4) ; m2(4,2) = m2(2,4) ; m2(4,3) = m2(3,4)
-    m2(4,4) =  0.75_rk * inv_q3 * (3.0_rk*S12sq - 2.0_rk*(S1S2 + S1S3 + S2S3) + 2.0_rk*(S1sq + S2sq + S3sq) + 6.0_rk*(S13sq + S23sq))
+    m2(4,4) = 3.0_rk*inv_q - 9.0_rk*S12sq*inv_q3
   
     if (ntens == 6) then
-      m2(1,5) = -0.75_rk * inv_q3 * (2.0_rk*S1 - S2 - S3) * S13
-      m2(1,6) = -0.75_rk * inv_q3 * (2.0_rk*S1 - S2 - S3) * S23
-      m2(2,5) =  0.75_rk * inv_q3 * (S1 - 2.0_rk*S2 + S3) * S13
-      m2(2,6) =  0.75_rk * inv_q3 * (S1 - 2.0_rk*S2 + S3) * S23
-      m2(3,5) =  0.75_rk * inv_q3 * (S1 + S2 - 2.0_rk*S3) * S13
-      m2(3,6) =  0.75_rk * inv_q3 * (S1 + S2 - 2.0_rk*S3) * S23
+      m2(1,5) = -1.5_rk * inv_q3 * (2.0_rk*S1 - S2 - S3) * S13
+      m2(1,6) = -1.5_rk * inv_q3 * (2.0_rk*S1 - S2 - S3) * S23
+      m2(2,5) =  1.5_rk * inv_q3 * (S1 - 2.0_rk*S2 + S3) * S13
+      m2(2,6) =  1.5_rk * inv_q3 * (S1 - 2.0_rk*S2 + S3) * S23
+      m2(3,5) =  1.5_rk * inv_q3 * (S1 + S2 - 2.0_rk*S3) * S13
+      m2(3,6) =  1.5_rk * inv_q3 * (S1 + S2 - 2.0_rk*S3) * S23
       m2(5,1) = m2(1,5) ; m2(5,2) = m2(2,5) ; m2(5,3) = m2(3,5)
       m2(6,1) = m2(1,6) ; m2(6,2) = m2(2,6) ; m2(6,3) = m2(3,6)
-      m2(4,5) = -2.25_rk * inv_q3 * S12 * S13
-      m2(4,6) = -2.25_rk * inv_q3 * S12 * S23
+      m2(4,5) = -9.0_rk * inv_q3 * S12 * S13
+      m2(4,6) = -9.0_rk * inv_q3 * S12 * S23
       m2(5,4) = m2(4,5) ; m2(6,4) = m2(4,6)
-      m2(5,5) = 0.75_rk * inv_q3 * (3.0_rk*S13sq - 2.0_rk*(S1S2 + S1S3 + S2S3) + 6.0_rk*(S12sq + S23sq) + 2.0_rk*(S1sq + S2sq + S3sq))
-      m2(5,6) = -2.25_rk * inv_q3 * S13 * S23
+      m2(5,5) = 3.0_rk*inv_q - 9.0_rk*S13sq*inv_q3
+      m2(5,6) = -9.0_rk * inv_q3 * S13 * S23
       m2(6,5) = m2(5,6)
-      m2(6,6) = 0.75_rk * inv_q3 * (3.0_rk*S23sq - 2.0_rk*(S1S2 + S1S3 + S2S3) + 6.0_rk*(S12sq + S13sq) + 2.0_rk*(S1sq + S2sq + S3sq))
+      m2(6,6) = 3.0_rk*inv_q - 9.0_rk*S23sq*inv_q3
     end if
   
     ! 
@@ -2259,7 +2268,8 @@ module material_hardening_soil_MN_bricks_
 
     n_iso = 1.5_rk * inv_q * inv_Ei * I1 - 9.0_rk * I1 * F * inv_Eur * inv_G * inv_Dphi &               
             - 4.5_rk * qsq * inv_Eur * dF_iso * inv_G * inv_Dphi + 4.5_rk * qsq * inv_Eur * F * inv_G2 * inv_Dphi * dG_iso &    
-            + 4.5_rk * qsq * inv_Eur * F * inv_G * inv_Dphi2 * dDphi_iso - 3.0_rk * gammapss * dF_iso * q * inv_G * inv_Dphi &          
+            + 4.5_rk * qsq * inv_Eur * F * inv_G * inv_Dphi2 * dDphi_iso &
+            - 3.0_rk * gammapss * dF_iso * q * inv_G * inv_Dphi &
             + 3.0_rk * gammapss * F * q * inv_G2 * inv_Dphi * dG_iso - 3.0_rk * gammapss * F * inv_q * inv_G * inv_Dphi * I1 &      
             + 3.0_rk * gammapss * F * q * inv_G * inv_Dphi2 * dDphi_iso    
   
@@ -2274,10 +2284,10 @@ module material_hardening_soil_MN_bricks_
     n(1) = n_iso + n_dev * (S2 + S3)
     n(2) = n_iso + n_dev * (S1 + S3)
     n(3) = n_iso + n_dev * (S1 + S2)
-    n(4) = -n_dev * S12
+    n(4) = -2.0_rk * n_dev * S12
     if (ntens == 6) then
-      n(5) = -n_dev * S13
-      n(6) = -n_dev * S23
+      n(5) = -2.0_rk * n_dev * S13
+      n(6) = -2.0_rk * n_dev * S23
     end if
   
     ! 
@@ -2302,6 +2312,7 @@ module material_hardening_soil_MN_bricks_
   !>* 03.03.2025, J. Machacek - Fix bug of missing coupling terms in m2, further simplification
   !>* 01.06.2026, J. Machacek - Interface: pass precomputed apex instead of (c, phi) - removes two dtan per call
   !                           - rename local scalar D -> coef3
+  !>* 20.07.2026, J. Machacek - Correct cap derivatives for engineering-shear Voigt coordinates
   ! 
   subroutine df_dg_cap(stress, ntens, w, w2, u, zetac, chi, alpha, pp, apex)
     implicit none
@@ -2347,10 +2358,10 @@ module material_hardening_soil_MN_bricks_
     w(1) = A - coef3 * (stress(2) + stress(3))
     w(2) = A - coef3 * (stress(1) + stress(3))
     w(3) = A - coef3 * (stress(1) + stress(2))
-    w(4) = coef3 * stress(4)
+    w(4) = 2.0_rk * coef3 * stress(4)
     if (ntens == 6) then
-      w(5) = coef3 * stress(5)
-      w(6) = coef3 * stress(6)
+      w(5) = 2.0_rk * coef3 * stress(5)
+      w(6) = 2.0_rk * coef3 * stress(6)
     end if
     
     u = w
@@ -2371,9 +2382,9 @@ module material_hardening_soil_MN_bricks_
     w2(2,3) = B - coef3 ; w2(3,2) = w2(2,3)
 
     ! Shear diagonal
-    w2(4,4) = coef3
+    w2(4,4) = 2.0_rk * coef3
     if (ntens == 6) then
-      w2(5,5) = coef3 ; w2(6,6) = coef3
+      w2(5,5) = 2.0_rk * coef3 ; w2(6,6) = 2.0_rk * coef3
     end if
 
   end subroutine df_dg_cap
@@ -2406,7 +2417,7 @@ module material_hardening_soil_MN_bricks_
   !>* 22.12.2025, J. Machacek - Initial version (refactoring, modernizing)
   !>* 28.12.2025, J. Machacek - Full Newton-Raphson, relative errors, Cramers rule to solve 2x2 system, remove common block
   !>* 01.06.2026, J. Machacek - Convergence now requires BOTH residuals (.and.); corrected stale modified-Newton doc
-  !>* 08.06.2026, J. Machacek - Return abs(alpha) since only alpha^2 appears in any equation, so the sign of alpha has no effect on any result
+  !>* 08.06.2026, J. Machacek - Return abs(alpha) since only alpha^2 appears in any equation; its sign has no effect
   !>* 01.07.2026, J. Machacek - Renamed to optimize_hs_bricks_internal_constants (HS-Brick module). The optimisation itself is
   !>                            performed with the base HS model response (H_i = 1), see objective_function. Thus alpha and Hpp
   !>                            retain their base-HS meaning and the Eoedref/K0nc calibration is unaffected by the BRICK extension.
@@ -2414,8 +2425,8 @@ module material_hardening_soil_MN_bricks_
   subroutine optimize_hs_bricks_internal_constants(props, nprops)
     implicit none
     
-    real(rk), intent(inout) :: props(nprops)
     integer, intent(in) :: nprops
+    real(rk), intent(inout) :: props(nprops)
     
     type(material_properties_ty_) :: mat
     
