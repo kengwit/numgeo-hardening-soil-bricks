@@ -2405,8 +2405,8 @@ module material_hardening_soil_MN_bricks_
   !> and lateral earth pressure coefficient (K0nc). A Newton-Raphson method is
   !> employed to solve the resulting nonlinear system of two equations.
   !>
-  !> The iteration continues until both residuals and the solution update
-  !> fall below the specified tolerance (1e-5).
+  !> The iteration continues until both relative residuals fall below the
+  !> specified tolerance (1e-6).
   !
   !> The Jacobian is recomputed at every iteration by central differences
   !> (full Newton-Raphson).
@@ -2421,12 +2421,14 @@ module material_hardening_soil_MN_bricks_
   !>* 01.07.2026, J. Machacek - Renamed to optimize_hs_bricks_internal_constants (HS-Brick module). The optimisation itself is
   !>                            performed with the base HS model response (H_i = 1), see objective_function. Thus alpha and Hpp
   !>                            retain their base-HS meaning and the Eoedref/K0nc calibration is unaffected by the BRICK extension.
+  !>* 23.08.2026, J. Machacek - Add optional CSV convergence-history output for the standalone calibration utility
   !
-  subroutine optimize_hs_bricks_internal_constants(props, nprops)
+  subroutine optimize_hs_bricks_internal_constants(props, nprops, history_file)
     implicit none
     
     integer, intent(in) :: nprops
     real(rk), intent(inout) :: props(nprops)
+    character(len=*), intent(in), optional :: history_file
     
     type(material_properties_ty_) :: mat
     
@@ -2440,7 +2442,11 @@ module material_hardening_soil_MN_bricks_
     real(rk) :: FVEC(2)
     real(rk) :: X(2)
     real(rk) :: det
+    real(rk) :: relative_error(2)
+    real(rk) :: error_measure
     integer :: iiter
+    integer :: history_unit, history_iostat
+    logical :: write_history
     
     ! Read in the material constants
     call mat%collect(props, nprops)
@@ -2455,6 +2461,24 @@ module material_hardening_soil_MN_bricks_
     ! Compute initial residuals (unnormalized)
     residual(1) = mat%Eoed - FVEC(1)
     residual(2) = mat%K0nc - FVEC(2)
+    
+    ! Optional convergence-history output. No file I/O is performed for normal
+    ! constitutive calls unless the caller explicitly supplies history_file.
+    write_history = present(history_file)
+    if (write_history) then
+      open(newunit=history_unit, file=trim(history_file), status='replace', action='write', iostat=history_iostat)
+      if (history_iostat /= 0) then
+        write(*,'(a)') 'Error: could not open HS internal-constant convergence-history file: '//trim(history_file)
+        error stop
+      end if
+      write(history_unit,'(a)') &
+        'iteration,residual_Eoed,residual_K0,relative_error_Eoed,relative_error_K0,error_measure,tolerance,alpha,Hpp'
+      relative_error(1) = abs(residual(1)) / mat%Eoed
+      relative_error(2) = abs(residual(2)) / mat%K0nc
+      error_measure = maxval(relative_error)
+      write(history_unit,'(i0,8(",",es24.16))') 0, residual(1), residual(2), relative_error(1), relative_error(2), error_measure, TOL, X(1), X(2)
+      flush(history_unit)
+    end if
     
     ! Newton-Raphson iteration loop
     newton_loop: do iiter = 1, MAXITER
@@ -2484,11 +2508,21 @@ module material_hardening_soil_MN_bricks_
       residual(1) = mat%Eoed - FVEC(1)
       residual(2) = mat%K0nc - FVEC(2)
       
+      if (write_history) then
+        relative_error(1) = abs(residual(1)) / mat%Eoed
+        relative_error(2) = abs(residual(2)) / mat%K0nc
+        error_measure = maxval(relative_error)
+        write(history_unit,'(i0,8(",",es24.16))') iiter, residual(1), residual(2), relative_error(1), relative_error(2), error_measure, TOL, X(1), X(2)
+        flush(history_unit)
+      end if
+      
       if ( abs(residual(1)) <= TOL*mat%Eoed .and. abs(residual(2)) <= TOL*mat%K0nc) then
         exit newton_loop
       end if
       
     end do newton_loop
+    
+    if (write_history) close(history_unit)
     
     ! In this implementation alpha appears only as (chi*alpha)^2, so its sign has no effect on any result
     ! the yield function, its gradients, and the integrated stress path are identical for +/-alpha. 

@@ -15,9 +15,9 @@
 !> optimize_hs_bricks_internal_constants (a virtual oedometer test, see README).
 !>
 !> The program prompts for the path of a parameter file at the start, reads props(1:16) from
-!> it, runs the calibration, and prints alpha and Hpp back to the user. It does not write any
-!> output file: the calibrated constants are only meant to be copied by hand into props(13) and
-!> props(14) of the real parameter file used for the analysis.
+!> it, runs the calibration, and prints alpha and Hpp back to the user. The Newton convergence
+!> history is written to hs_internal_constants_convergence.csv in the current working directory.
+!> The calibrated constants are then copied into props(13) and props(14) of the real parameter file.
 !>
 !> The expected parameter file has exactly the format of example/parameters.inp:
 !>
@@ -54,6 +54,7 @@
 !
 !>### History
 !>* 02.07.2026, J. Machacek - Initial version
+!>* 23.08.2026, J. Machacek - Write Newton convergence history for review and reproducibility
 !
 !=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 program calibrate_hs_bricks
@@ -64,6 +65,7 @@ program calibrate_hs_bricks
   implicit none
 
   integer(ik), parameter :: NPROPS_REQUIRED = 16
+  character(len=*), parameter :: HISTORY_FILE = 'hs_internal_constants_convergence.csv'
 
   character(len=256) :: filename
   character(len=256) :: cmname
@@ -118,12 +120,13 @@ program calibrate_hs_bricks
   write(*,'(a)') ' '
   write(*,'(a)') 'Parameters read successfully. Running the calibration (virtual oedometer test)...'
 
-  call optimize_hs_bricks_internal_constants(props, nprops)
+  call optimize_hs_bricks_internal_constants(props, nprops, history_file=HISTORY_FILE)
 
   write(*,'(a)') ' '
   write(*,'(a)') 'Calibration complete:'
   write(*,'(a,es16.8)') '  alpha (props(13)) = ', props(13)
   write(*,'(a,es16.8)') '  Hpp   (props(14)) = ', props(14)
+  write(*,'(a)') '  convergence history = '//HISTORY_FILE
   write(*,'(a)') ' '
   write(*,'(a)') 'Copy these two values into props(13) and props(14) of your Hardening-Soil-MN-Bricks input.'
 
