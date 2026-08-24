@@ -78,13 +78,16 @@ tool.
 
     ```
     Calibration complete:
-      alpha (props(13)) =   5.14549145E-01
-      Hpp   (props(14)) =   9.86591189E+03
+      alpha (props(13)) =   5.14542433E-01
+      Hpp   (props(14)) =   9.86724062E+03
+      convergence history = hs_internal_constants_convergence.csv
     ```
 
-    — which are exactly the `alpha`/`Hpp` values already used in
-    `examples/IncrementalDriver/parameters.inp`, confirming the two examples are consistent with
-    each other.
+    The convergence CSV can be plotted with `scripts/plot_hs_internal_optimization_history.py`;
+    see the [Calibration tool](components/calibration.md) page for the columns and command line.
+
+    These values are consistent with the rounded `alpha`/`Hpp` values used in
+    `examples/IncrementalDriver/parameters.inp`.
 
 ---
 

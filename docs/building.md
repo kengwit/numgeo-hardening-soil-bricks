@@ -31,9 +31,9 @@ intermediates.
 ## Command-line build (gfortran)
 
 Every component can equally be built with a plain `gfortran` invocation — useful on Linux/macOS,
-or for scripted/CI builds. `-fdec-math` is required in all cases (the constitutive routines use
-the DEC-style double-precision intrinsics `dsqrt`, `dabs`, `dexp`, `dlog`, `dcos`, `dsin`, `dtan`,
-`dacos`).
+or for scripted/CI builds. The legacy incremental-driver build retains `-fdec-math`. The shared
+constitutive source and the calibration utility are standard-conforming Fortran 2008 and are also
+checked with the standard 132-character free-form line limit.
 
 === "Incremental driver"
 
@@ -50,13 +50,31 @@ the DEC-style double-precision intrinsics `dsqrt`, `dabs`, `dexp`, `dlog`, `dcos
 === "Calibration tool"
 
     ```bash
-    gfortran -fdec-math -ffree-line-length-none -O2 \
+    gfortran -std=f2008 -ffree-line-length-132 -Werror=line-truncation -O2 \
       src/numgeo-hs-bricks/precision_.f90 \
       src/numgeo-hs-bricks/compatibility_numgeo_.f90 \
       src/numgeo-hs-bricks/numgeo_hardening_soil_MN_bricks_.f90 \
       src/numgeo-hs-bricks-calibration/calibrate_hs_bricks.f90 \
       -o numgeo-hs-bricks-calibration
     ```
+
+
+=== "Calibration regression test"
+
+    ```bash
+    gfortran -std=f2008 -ffree-line-length-132 -Werror=line-truncation -O2 \
+      src/numgeo-hs-bricks/precision_.f90 \
+      src/numgeo-hs-bricks/compatibility_numgeo_.f90 \
+      src/numgeo-hs-bricks/numgeo_hardening_soil_MN_bricks_.f90 \
+      tests/test_calibration_optimizer.f90 \
+      -o test_calibration_optimizer
+
+    ./test_calibration_optimizer
+    ```
+
+    The test checks two parameter sets, positive calibrated constants, monotonic decrease of the
+    accepted-iterate merit function, convergence to the specified tolerance, and identical results
+    with and without convergence-history output.
 
 === "UMAT (shared library)"
 

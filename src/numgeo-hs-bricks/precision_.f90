@@ -31,10 +31,10 @@ module precision_
   integer, parameter, public  :: r8  = c_double
   integer, parameter, public  :: r4  = c_float
 
-  integer, parameter, public  :: i8 = selected_int_kind(18)               !< Range \([-2^{63},+2^{63} - 1]\), 19 digits plus sign; 64 bits.
-  integer, parameter, public  :: i4 = selected_int_kind(9)                !< Range \([-2^{31},+2^{31} - 1]\), 10 digits plus sign; 32 bits.
-  integer, parameter, public  :: i2 = selected_int_kind(4)                !< Range \([-2^{15},+2^{15} - 1]\), 5  digits plus sign; 16 bits.
-  integer, parameter, public  :: i1 = selected_int_kind(2)                !< Range \([-2^{7} ,+2^{7}  - 1]\), 3  digits plus sign; 8  bits.
+  integer, parameter, public :: i8 = selected_int_kind(18)  !< 64-bit integer; at least 18 decimal digits.
+  integer, parameter, public :: i4 = selected_int_kind(9)   !< 32-bit integer; at least 9 decimal digits.
+  integer, parameter, public :: i2 = selected_int_kind(4)   !< 16-bit integer; at least 4 decimal digits.
+  integer, parameter, public :: i1 = selected_int_kind(2)   !< 8-bit integer; at least 2 decimal digits.
 
   integer, parameter, public  :: rk = r8                                  !< Default real precision
   integer, parameter, public  :: ik = i4                                  !< Default integer precision

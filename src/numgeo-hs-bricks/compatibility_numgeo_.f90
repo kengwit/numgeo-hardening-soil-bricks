@@ -113,8 +113,10 @@ module compatibility_numgeo_
     else
       ! General 3D
       J2 = 0.5_rk * (s1*s1 + s2*s2 + s3*s3) + stress(4)*stress(4) + stress(5)*stress(5) + stress(6)*stress(6)
-      J3 = (s1*s1*s1 + s2*s2*s2 + s3*s3*s3 + 6.0_rk*stress(4)*stress(5)*stress(6) + 3.0_rk*(s1*(stress(4)*stress(4) + stress(5)*stress(5)) &
-            + s2*(stress(4)*stress(4) + stress(6)*stress(6)) + s3*(stress(5)*stress(5) + stress(6)*stress(6)))) / 3.0_rk
+      J3 = (s1*s1*s1 + s2*s2*s2 + s3*s3*s3 + 6.0_rk*stress(4)*stress(5)*stress(6) &
+            + 3.0_rk*(s1*(stress(4)*stress(4) + stress(5)*stress(5)) &
+            + s2*(stress(4)*stress(4) + stress(6)*stress(6)) &
+            + s3*(stress(5)*stress(5) + stress(6)*stress(6)))) / 3.0_rk
     end if
 
     ! Near-hydrostatic state

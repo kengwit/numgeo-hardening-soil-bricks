@@ -15,7 +15,7 @@
 !> optimize_hs_bricks_internal_constants (a virtual oedometer test, see README).
 !>
 !> The program prompts for the path of a parameter file at the start, reads props(1:16) from
-!> it, runs the calibration, and prints alpha and Hpp back to the user. The Newton convergence
+!> it, runs the calibration, and prints alpha and Hpp back to the user. The globalised Newton convergence
 !> history is written to hs_internal_constants_convergence.csv in the current working directory.
 !> The calibrated constants are then copied into props(13) and props(14) of the real parameter file.
 !>
@@ -54,7 +54,7 @@
 !
 !>### History
 !>* 02.07.2026, J. Machacek - Initial version
-!>* 23.08.2026, J. Machacek - Write Newton convergence history for review and reproducibility
+!>* 23.08.2026, J. Machacek - Write globalised Newton convergence history for review and reproducibility
 !
 !=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 program calibrate_hs_bricks
@@ -69,6 +69,7 @@ program calibrate_hs_bricks
 
   character(len=256) :: filename
   character(len=256) :: cmname
+  character(len=512) :: iomsg
   integer(ik) :: nprops, i, iu, ios
   real(rk), allocatable :: props(:)
 
@@ -79,30 +80,34 @@ program calibrate_hs_bricks
   write(*,'(a)') 'Enter the path of the parameter file (same format as example/parameters.inp):'
   read(*,'(a)') filename
   filename = adjustl(filename)
+  if (len_trim(filename) == 0) then
+    error stop 'calibrate_hs_bricks: the parameter-file path must not be empty'
+  end if
 
-  open(newunit=iu, file=trim(filename), status='old', action='read', iostat=ios)
+  open(newunit=iu, file=trim(filename), status='old', action='read', iostat=ios, iomsg=iomsg)
   if (ios /= 0) then
     write(*,'(a)') 'Error: could not open file "'//trim(filename)//'"'
-    stop 1
+    write(*,'(a)') 'Reason: '//trim(iomsg)
+    error stop 1
   end if
 
   read(iu,'(a)',iostat=ios) cmname
   if (ios /= 0) then
     write(*,'(a)') 'Error: could not read the material name (first line) from the parameter file'
-    stop 1
+    error stop 1
   end if
 
   read(iu,*,iostat=ios) nprops
   if (ios /= 0) then
     write(*,'(a)') 'Error: could not read nprops (second line) from the parameter file'
-    stop 1
+    error stop 1
   end if
 
   if (nprops /= NPROPS_REQUIRED) then
     write(*,'(a,i0,a,i0,a)') 'Error: the parameter file specifies nprops = ', nprops, &
                               ', but the Hardening-Soil-MN-Bricks model requires nprops = ', NPROPS_REQUIRED, &
                               ' (props(15) = gamma07, props(16) = G0ref must be present).'
-    stop 1
+    error stop 1
   end if
 
   allocate(props(nprops))
@@ -111,14 +116,14 @@ program calibrate_hs_bricks
     read(iu,*,iostat=ios) props(i)
     if (ios /= 0) then
       write(*,'(a,i0,a)') 'Error: could not read props(', i, ') from the parameter file'
-      stop 1
+      error stop 1
     end if
   end do
 
   close(iu)
 
   write(*,'(a)') ' '
-  write(*,'(a)') 'Parameters read successfully. Running the calibration (virtual oedometer test)...'
+  write(*,'(a)') 'Parameters read successfully. Running the globalised calibration (virtual oedometer test)...'
 
   call optimize_hs_bricks_internal_constants(props, nprops, history_file=HISTORY_FILE)
 
