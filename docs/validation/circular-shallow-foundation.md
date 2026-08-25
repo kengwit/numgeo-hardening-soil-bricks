@@ -35,10 +35,7 @@ axis beneath the loaded surface.
 
 <figure class="hsb-fig-wrap" markdown>
 ![Axisymmetric circular shallow foundation: numgeo vs. Abaqus](../assets/figures/hs-mn-shallow-foundation.png){ .hsb-fig }
-<figcaption>
-Axisymmetric circular shallow-foundation benchmark. (a) Structured $10\,\mathrm{m}\times10\,\mathrm{m}$
-domain with a uniformly loaded footing radius of $1\,\mathrm{m}$; (b) footing-centre settlement
-versus applied pressure increment for native numgeo and Abaqus/UMAT.
+<figcaption> Axisymmetric circular shallow-foundation benchmark. (a) Structured domain with a uniformly loaded footing radius of 1 m; (b) footing-centre settlement versus applied pressure increment for native numgeo and Abaqus/UMAT.
 </figcaption>
 </figure>
 
@@ -52,14 +49,14 @@ finite-element equilibrium iterations.
 ## Input files
 
 The Abaqus files for this benchmark are shipped with the repository in
-`examples/umat/circular footing/circular-footing - Kopie/`:
+`examples/umat/circular footing/circular-footing/`:
 
-- [`input-abaqus.inp`](https://github.com/j-machacek/numgeo-hardening-soil-bricks/blob/HEAD/examples/umat/circular%20footing/circular-footing%20-%20Kopie/input-abaqus.inp) - complete Abaqus axisymmetric input deck, including mesh,
+- [`input-abaqus.inp`](https://github.com/j-machacek/numgeo-hardening-soil-bricks/blob/HEAD/examples/umat/circular%20footing/circular-footing/input-abaqus.inp) - complete Abaqus axisymmetric input deck, including mesh,
   sets, material definition, initial stresses, boundary conditions and loading;
-- [`run.bat`](https://github.com/j-machacek/numgeo-hardening-soil-bricks/blob/HEAD/examples/umat/circular%20footing/circular-footing%20-%20Kopie/run.bat) - convenience command for submitting the model as job `sim` with the
+- [`run.bat`](https://github.com/j-machacek/numgeo-hardening-soil-bricks/blob/HEAD/examples/umat/circular%20footing/circular-footinge/run.bat) - convenience command for submitting the model as job `sim` with the
   supplied `user.for` UMAT bundle.
 
-[:octicons-file-directory-16: Browse the benchmark input folder](https://github.com/j-machacek/numgeo-hardening-soil-bricks/tree/HEAD/examples/umat/circular%20footing/circular-footing%20-%20Kopie){ target="_blank" }
+[:octicons-file-directory-16: Browse the benchmark input folder](https://github.com/j-machacek/numgeo-hardening-soil-bricks/tree/HEAD/examples/umat/circular%20footing/circular-footing){ target="_blank" }
 
 The constitutive source and Abaqus wrapper files are the same as for the
 [UMAT element-test example](../examples.md#umat-example). Follow the
