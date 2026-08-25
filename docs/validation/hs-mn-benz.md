@@ -13,11 +13,11 @@ Dense Hostun sand (stiffnesses and stresses in kPa):
 
 | $E_{50}^{ref}$ | $E_{oed}^{ref}$ | $E_{ur}^{ref}$ | $m$ | $c$ | $\varphi$ | $\psi$ | $\nu_{ur}$ |
 |---|---|---|---|---|---|---|---|
-| 30\,000 | 30\,000 | 90\,000 | 0.55 | 0 | $42^\circ$ | $16^\circ$ | 0.25 |
+| 30,000 | 30,000 | 90,000 | 0.55 | 0 | $42^\circ$ | $16^\circ$ | 0.25 |
 
 | $p_{ref}$ | $K_0^{nc}$ | $R_f$ | $E_i^{ref}$ | $\alpha$ | $H_{pp}$ | $\gamma_{0.7}$ | $G_0^{ref}$ |
 |---|---|---|---|---|---|---|---|
-| 100 | 0.4 | 0.9 | 65\,000 | 1.46 | 72\,000 | negligible (e.g. $10^{-6}$) | 108\,000 |
+| 100 | 0.4 | 0.9 | 65,000 | 1.46 | 72,000 | negligible (e.g. $10^{-6}$) | 108\,000 |
 
 !!! note "Isolating the base mechanism"
     $\gamma_{0.7}$ is set to a negligible value here specifically to **deactivate** the BRICK
