@@ -1,8 +1,5 @@
 # References
 
-The theory manual on the numgeo documentation site gives full context for each of these; they
-are listed here for citation convenience.
-
 [1] Schanz, T., Vermeer, P. A., Bonnier, P. G. (1999).
 *The Hardening Soil model: formulation and verification.*
 In: Beyond 2000 in Computational Geotechnics — 10 Years of PLAXIS International. Balkema,

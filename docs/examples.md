@@ -1,13 +1,17 @@
 # Examples
 
-Three ready-to-run examples are shipped in `examples/`: two with pre-built executables already
-sitting next to their input files, and one Abaqus input deck for the UMAT interface.
+Four ready-to-run examples are shipped in `examples/`: two standalone examples with pre-built
+executables and two Abaqus/UMAT examples, comprising a single-element test and an axisymmetric
+circular shallow-foundation boundary-value problem.
 
 ```
 examples/
 ├── IncrementalDriver/     → IncrementalDriver.exe + input files + pre-computed results
 ├── Calibration/           → numgeo-hs-bricks-calibration.exe + parameters.inp
-└── umat/                  → triax-hs-bricks.inp (Abaqus input deck)
+└── umat/
+    ├── element test/      → triax-hs-bricks.inp + comparison data
+    └── circular footing/
+        └── circular-footing - Kopie/ → input-abaqus.inp + run.bat
 ```
 
 ---
@@ -93,7 +97,7 @@ tool.
 
 ## UMAT example
 
-`examples/umat/triax-hs-bricks.inp` is a complete, working Abaqus input deck for the UMAT
+`examples/umat/element test/triax-hs-bricks.inp` is a complete, working Abaqus input deck for the UMAT
 interface: a single axisymmetric `CAX4R` element (reduced integration, with hourglass control),
 a step named "Geostatic" (using `*Static`) that establishes the initial stress state, followed by
 a drained triaxial compression step driving the top boundary to $-10\,\%$ axial strain. Here is
@@ -119,7 +123,7 @@ siblings of the `numgeo-hs-bricks` subfolder, not inside it):
 | `umat.f90` | The actual `subroutine umat(...)`: translates Abaqus' calling convention (stress/strain arrays, `NTENS`, `KINC`, ...) into a call to `hardening_soil_MN_bricks` in the constitutive module, and translates the result back. |
 | `sdvini.f90` | Implements Abaqus' `SDVINI` hook, used in this example to set the initial preconsolidation stress `statev(3)` before the analysis starts — see [UMAT (Abaqus) interface: sdvini.f90](components/umat.md#sdvinif90-initialising-state-variables). |
 
-**3. Copy the input deck**, `examples/umat/triax-hs-bricks.inp`, into the same directory.
+**3. Copy the input deck**, `examples/umat/element test/triax-hs-bricks.inp`, into the same directory.
 
 You should now have:
 
@@ -164,8 +168,37 @@ native numgeo, for identical parameters and loading.
 </figcaption>
 </figure>
 
-`examples/umat/` ships everything behind this figure: `abaqus-result.dat` (the result of the run
+`examples/umat/element test/` ships everything behind this figure: `abaqus-result.dat` (the result of the run
 above), `numgeo-result.dat` (the same test run through numgeo directly), and `triax_CD.py`, the
 script that reads both and produces this plot. See
 [UMAT (Abaqus) vs. numgeo](validation/umat-vs-numgeo.md) for the quantified agreement and what
 this comparison does and doesn't validate.
+
+### Axisymmetric circular shallow-foundation example
+
+A second Abaqus example exercises the UMAT in a non-uniform boundary-value problem rather than a
+single element. The model is an axisymmetric circular foundation with radius $1\,\mathrm{m}$ on a
+$10\,\mathrm{m}\times10\,\mathrm{m}$ soil domain, discretised with structured `CAX8` elements. After
+a geostatic gravity step, a uniform footing pressure is ramped to $1000\,\mathrm{kPa}$.
+
+<figure class="hsb-fig-wrap" markdown>
+![Axisymmetric circular shallow foundation](assets/figures/hs-mn-shallow-foundation.png){ .hsb-fig }
+<figcaption>
+Axisymmetric circular shallow foundation: model geometry and footing-centre pressure-settlement
+response from native numgeo and Abaqus/UMAT.
+</figcaption>
+</figure>
+
+The Abaqus and numgeo curves are practically coincident over the complete common loading path.
+This benchmark therefore extends the material-point interface check above to repeated UMAT calls
+at spatially varying stress states within a global finite-element equilibrium problem.
+
+The files are available directly in the repository:
+
+- [`input-abaqus.inp`](https://github.com/j-machacek/numgeo-hardening-soil-bricks/blob/HEAD/examples/umat/circular%20footing/circular-footing%20-%20Kopie/input-abaqus.inp)
+- [`run.bat`](https://github.com/j-machacek/numgeo-hardening-soil-bricks/blob/HEAD/examples/umat/circular%20footing/circular-footing%20-%20Kopie/run.bat)
+- [:octicons-file-directory-16: complete circular-footing example folder](https://github.com/j-machacek/numgeo-hardening-soil-bricks/tree/HEAD/examples/umat/circular%20footing/circular-footing%20-%20Kopie){ target="_blank" }
+
+For the complete model description and interpretation, see
+[Axisymmetric circular shallow foundation](validation/circular-shallow-foundation.md).
+

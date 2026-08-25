@@ -123,12 +123,17 @@ The exact default location depends on your Abaqus version, for example:
   upper-cases material names before passing them to `UMAT`) — see
   [Model parameters](../parameters.md#model-identifier).
 - **`nprops = 16`**, **`*Depvar` = `73`** — see [Model parameters](../parameters.md).
-- A complete, working example (single axisymmetric `CAX4R` element with hourglass control, an
-  initial step establishing the geostatic stress state, followed by a drained triaxial
-  compression step) is shipped in `examples/umat/triax-hs-bricks.inp` — see
+- A complete, working element-test example (single axisymmetric `CAX4R` element with hourglass
+  control, an initial step establishing the geostatic stress state, followed by a drained triaxial
+  compression step) is shipped in `examples/umat/element test/triax-hs-bricks.inp` — see
   [Examples](../examples.md#umat-example) for how to run it, and
   [UMAT (Abaqus) vs. numgeo](../validation/umat-vs-numgeo.md) for confirmation that it reproduces
-  the parent code's results.
+  the parent code's material-point response.
+- A second example applies the same UMAT to a spatially non-uniform boundary-value problem: an
+  axisymmetric circular shallow foundation loaded to $1000\,\mathrm{kPa}$. The Abaqus input deck
+  and run script are shipped in `examples/umat/circular footing/circular-footing - Kopie/`; see
+  [Axisymmetric circular shallow foundation](../validation/circular-shallow-foundation.md) for the
+  model definition, input-file links and the direct comparison with native numgeo.
 
 !!! danger "alpha and Hpp are NOT calibrated automatically here"
     Unlike the [incremental driver](incremental-driver.md), this UMAT interface does **not** fall

@@ -1,8 +1,9 @@
 # Validation
 
-Three element-test comparisons validate this implementation: two against published external
-references (for the base mechanism and for the BRICK extension), and one cross-checking the
-Abaqus UMAT interface against the parent code, numgeo, it was extracted from.
+The verification suite combines three element-test comparisons with one axisymmetric
+boundary-value benchmark. Two element tests compare the constitutive response against published
+external references, while the remaining examples cross-check the Abaqus UMAT interface against
+the parent code, numgeo, first at material-point level and then in a spatially non-uniform finite-element analysis.
 
 <div class="hsb-grid" markdown>
 
@@ -27,6 +28,13 @@ BRICK extension does not overshoot. <br>
 The same test run through Abaqus/UMAT and through native numgeo: confirms the UMAT interface
 reproduces the parent code's results rather than behaving as an independent reimplementation. <br>
 [:octicons-arrow-right-16: Details](umat-vs-numgeo.md)
+</div>
+
+<div class="hsb-card" markdown>
+### :material-foundation: Circular shallow foundation
+Axisymmetric $10\,\mathrm{m}\times10\,\mathrm{m}$ boundary-value problem with a $1\,\mathrm{m}$ footing
+radius: compares the complete pressure-settlement path from native numgeo and Abaqus/UMAT. <br>
+[:octicons-arrow-right-16: Details](circular-shallow-foundation.md)
 </div>
 
 </div>

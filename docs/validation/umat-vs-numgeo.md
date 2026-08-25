@@ -35,3 +35,11 @@ and $\Delta\varepsilon_v = 0.04$ percentage points.
     the model through Abaqus gives the same physics as using it through numgeo or the
     [incremental driver](../components/incremental-driver.md), not an independently-behaving
     reimplementation.
+
+## Boundary-value verification
+
+The same interface has additionally been exercised in a spatially non-uniform finite-element
+problem. The [axisymmetric circular shallow-foundation benchmark](circular-shallow-foundation.md)
+compares the complete pressure-settlement response obtained with native numgeo and Abaqus/UMAT
+for the same geometry, material parameters and loading history.
+

@@ -37,11 +37,12 @@ nav = [
       { "Base model vs. Benz (2007)" = "validation/hs-mn-benz.md" },
       { "BRICK extension vs. ZSoil" = "validation/hs-mn-bricks-zsoil.md" },
       { "UMAT (Abaqus) vs. numgeo" = "validation/umat-vs-numgeo.md" },
+      { "Circular shallow foundation (Abaqus vs. numgeo)" = "validation/circular-shallow-foundation.md" },
   ]},
-
+  
   { "About & contact" = "about.md" },
   { "References" = "references.md" },
-]
+  ]
 
 # --- Custom CSS / JS --------------------------------------------------------
 
